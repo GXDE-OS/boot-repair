@@ -1,3 +1,9 @@
+boot-repair (4ppa2082) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+
+ -- gfdgd_xi <3025613752@qq.com>  Wed, 05 Feb 2025 14:40:26 +0800
+
 boot-repair (4ppa2081) oracular; urgency=low
 
   * clean-up EFI entries (remove dp and data )
