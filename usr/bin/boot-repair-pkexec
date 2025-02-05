@@ -1,0 +1,36 @@
+#! /bin/sh
+# Copyright 2014-2017 Yann MRN
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
+# by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+# PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+app=boot-repair
+if hash pkexec;then #https://bugzilla.gnome.org/show_bug.cgi?id=776437
+	GRANTED_XHOST_ROOT=""
+	if hash xhost && ! xhost | grep -qi 'SI:localuser:root';then #workaround bug#1713313
+		xhost +SI:localuser:root > /dev/null
+		GRANTED_XHOST_ROOT=yes
+	fi
+	pkexec /usr/bin/$app
+	[[ "$GRANTED_XHOST_ROOT" ]] && xhost -SI:localuser:root > /dev/null #also added at end of bs-cmd.sh
+elif hash gksudo;then
+	gksudo /usr/bin/$app
+elif hash gksu;then
+	gksu /usr/bin/$app
+elif hash kdesudo;then
+	kdesudo /usr/bin/$app
+elif hash xdg-su;then
+	xdg-su -c /usr/bin/$app
+else
+	zenity --error --text="Root privileges are required to run $app."
+fi
+exit

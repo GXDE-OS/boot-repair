@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright 2012 Yann MRN
+# Copyright 2024 Yann MRN
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3, as published
@@ -13,108 +13,177 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
+
 ##################### Main function for GUI preparation ################
 check_os_and_mount_blkid_partitions_gui() {
-update_translations
-echo "SET@_label0.set_text('''$LAB (os-prober). $This_may_require_several_minutes''')"
-delete_tmp_folder_to_be_cleared_and_update_osprober
-echo "SET@_label0.set_text('''$LAB (mount). $This_may_require_several_minutes''')"
-check_if_live_session			#After update_translation and update_osprober, and before check_os_names
-check_os_and_mount_blkid_partitions
-echo "SET@_label0.set_text('''$LAB. $This_may_require_several_minutes''')"
-check_disk_types				#before part_types (for usb)
-check_part_types				#After mount_all_blkid_partitions_except_df & determine_part_uuid & determine_part_with_os
-check_wubi_existence			#After mount_all_blkid_partitions_except_df
-check_efi_parts
-check_efi_dmesg					#After check_efi_parts
-debug_echo_part_info
+delete_tmp_folder_to_be_cleared #[[ ! "$1" ]] && 
+blkid_fdisk_and_parted_update
+[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB ($([[ -d /sys/firmware/efi ]] && echo "EFI-session" || echo "BIOS-session" )). $This_may_require_several_minutes''')"
+#[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB (mount). $This_may_require_several_minutes''')"
+#echo_blkid
+check_blkid_partitions					#In order to save MBR of all disks detected by blkid
+#determine_bios_boot						#to avoid mounting BIOS Boot
+TOTAL_QUANTITY_OF_OS=0; check_os_detected_by_os-prober		#run os-prober a first time before mounting partitions
+mount_all_blkid_partitions_except_df    #need to be between the 2 check_os_detected_by_os-prober (need to update os-prober if btrfs)
+determine_part_uuid						#After check_blkid_partitions
+check_location_first_partitions			#Output: $BYTES_BEFORE_PART[$disk]
+check_os_detected_by_os-prober			#run os-prober a 2nd time after mounting 
+mount_all_blkid_partitions_except_df		#To update OS_Mount_points
+determine_part_with_os $1				#after check_os_detected_by_os-prober, to get OSNAME (before check_recovery_or_hidden)
+check_recovery_or_hidden				#After mount_all_blkid_partitions_except_df & before logs
+put_the_current_mbr_in_tmp
+#[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB. $This_may_require_several_minutes''')"
+[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB ($([[ -d /sys/firmware/efi ]] && echo "EFI-session" || echo "BIOS-session" )). $This_may_require_several_minutes''')"
+check_disk_types					#before part_types (for usb and gpt and esp_check)
+check_part_types $1				#After mount_all_blkid_partitions_except_df & determine_part_uuid & determine_part_with_os
+check_efi_dmesg_and_secureboot 				#Ideally after check_efi_parts
+#[[ "$GUI" ]] && echo "SET@_label0.set_text('''$Scanning_systems. $Please_wait''')"
+[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB ($([[ -d /sys/firmware/efi ]] && echo "SecureBoot ${SECUREBOOT%%ed*}ed" || echo "BIOS-session" )). $Please_wait''')"
+paragraph_part_info
 }
 
-debug_echo_part_info() {
+delete_tmp_folder_to_be_cleared() {
+update_translations
+[[ "$GUI" ]] && echo "SET@_label0.set_text('''$LAB (os-prober). $This_may_require_several_minutes''')"
+[[ "$DEBBUG" ]] && echo "[debug]Delete the content of TMP_FOLDER_TO_BE_CLEARED"
+[[ "$TMP_FOLDER_TO_BE_CLEARED" ]] && rm -f $TMP_FOLDER_TO_BE_CLEARED/* || echo "Error: TMP_FOLDER_TBC empty. $PLEASECONTACT"
+}
+
+paragraph_part_info() {
 local i d a b x y
-echo "
-$DASH PARTITIONS & DISKS:"
-for ((i=1;i<=NBOFPARTITIONS;i++)); do
-	echo "${LISTOFPARTITIONS[$i]}	: ${DISK_PART[$i]},	${PART_WITH_SEPARATEBOOT[$i]},	${GRUB_ENV[$i]}\
-	${GRUBVER[$i]},	${DOCGRUB[$i]},	${UPDATEGRUB_OF_PART[$i]},	${ARCH_OF_PART[$i]},	${BOOTPRESENCE_OF_PART[$i]},\
-	${PART_WITH_OS[$i]},	${BIS_EFI_TYPE[$i]},	${BOOT_IN_FSTAB_OF_PART[$i]},	${EFI_IN_FSTAB_OF_PART[$i]},\
-	${WINNT[$i]},	${WINL[$i]},	${RECOV[$i]},	${WINMGR[$i]},	${WINBOOTPART[$i]},\
-	${APTTYP[$i]},	${GRUBTYPE_OF_PART[$i]},	${USRPRESENCE_OF_PART[$i]},	${USR_IN_FSTAB_OF_PART[$i]},\
-	${SEPARATE_USR_PART[$i]},	${CUSTOMIZER[$i]},	${FARBIOS[$i]},	${BLKIDMNT_POINT[$i]}."
-done
-echo ""
+ECHO_PARTS_INFO="Disks info: ____________________________________________________________________
+"
 for ((d=1;d<=NBOFDISKS;d++)); do
-	echo "${LISTOFDISKS[$d]}	: ${GPT_DISK[$d]},	${BIOS_BOOT[$d]},	${BISEFI_DISK[$d]}, \
-	${USBDISK[$d]},	${DISK_WITHOS[$d]},	${SECTORS_BEFORE_PART[$d]} sectors * ${BYTES_PER_SECTOR[$d]} bytes"
+	ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+${LISTOFDISKS[$d]#*/dev/}	: ${GPT_DISK[$d]},	${BIOS_BOOT_DISK[$d]},	${EFI_DISK[$d]}, \
+	${USBDISK[$d]},	${MMCDISK[$d]}, ${DISK_HASOS[$d]},	${REALWINONDISC[$d]},	${SECTORS_BEFORE_PART[$d]} sectors * ${BYTES_PER_SECTOR[$d]} bytes"
 done
-echo "
+ECHO_PARTS_INFO="$ECHO_PARTS_INFO
 
-$DASH parted -l:
-
-$PARTEDL
-
-$DASH parted -lm:
-
-$PARTEDLM
+Partitions info (1/3): _________________________________________________________
 "
-echo "
-$DASH mount:
-$MOUNTB
-
-"
-echo "SET@_label0.set_text('''${Scanning_systems}. $Please_wait''')"
-
-#debug
-echo "$DASH ls:"
-a=/sys/block/;for x in $(ls $a);do if [[ ! "$x" =~ ram ]] && [[ ! "$x" =~ oop ]];then b="";for y in $(ls $a$x);do b="$b $y";done;echo "$a$x (filtered): $b";fi;done #debug
-a="";for x in $(ls /dev);do if [[ ! "$x" =~ ram ]] && [[ ! "$x" =~ oop ]] && [[ ! "$x" =~ tty ]] && [[ ! "$x" =~ vcs ]];then a="$a $x";fi;done;echo "/dev (filtered): $a" #debug
-if [[ "$(ls /dev | grep -ix md )" ]];then
-	a="";for x in $(ls /dev/md);do a="$a $x";done;echo "ls /dev/md: $a" #debug
-fi
-for y in /dev/mapper /dev/cciss; do if [ -d $y ];then a="";for x in $(ls $y);do a="$a $x";done;echo "ls $y: $a";fi;done #debug
 for ((i=1;i<=NBOFPARTITIONS;i++)); do
-	if [[ -d "${BLKIDMNT_POINT[$i]}"/efi ]];then
-		a=""; for x in $(find "${BLKIDMNT_POINT[$i]}/efi" -name "*");do a="$x $a";done
-		echo "Files in ${BLKIDMNT_POINT[$i]}/efi: $a"
-	fi
-	if [[ "$(ls "${BLKIDMNT_POINT[$i]}" | grep -ix windows )" ]];then #Win detect
-		a=""; for x in $(ls "${BLKIDMNT_POINT[$i]}");do a="$x $a";done; echo "ls ${BLKIDMNT_POINT[$i]}: $a"
-	fi
+    ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+${LISTOFPARTITIONS[$i]#*/dev/}	: ${PART_WITH_OS[$i]},	${ARCH_OF_PART[$i]}, ${APTTYP[$i]},	${DOCGRUB[$i]},	${GRUBVER[$i]},	${GRUBTYPE_OF_PART[$i]},	${GRUB_ENV[$i]},	${UPDATEGRUB_OF_PART[$i]},	${FARBIOS[$i]}"
 done
+ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+
+Partitions info (2/3): _________________________________________________________
+"
+for ((i=1;i<=NBOFPARTITIONS;i++)); do
+	ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+${LISTOFPARTITIONS[$i]#*/dev/}	: ${EFI_TYPE[$i]},	${FSTAB_HASGOODEFI_OFPART[$i]},	${WINNT[$i]},	${WINL[$i]},	${RECOV[$i]},	${WINMGR[$i]},	${WINBOOTPART[$i]}, $(lsblk ${LISTOFPARTITIONS[$i]} -n -o FSTYPE)"
+done
+ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+
+Partitions info (3/3): _________________________________________________________
+"
+for ((i=1;i<=NBOFPARTITIONS;i++)); do
+	ECHO_PARTS_INFO="$ECHO_PARTS_INFO
+${LISTOFPARTITIONS[$i]#*/dev/}	: ${PART_WITH_SEPARATEBOOT[$i]},	${BOOT_AND_KERNEL_IN[$i]},	${FSTAB_HAS_GOOD_BOOT[$i]},	${SEPARATE_USR_PART[$i]},	${USRPRESENCE_OF_PART[$i]},	${USR_IN_FSTAB_OF_PART[$i]},	${CUSTOMIZER[$i]},	${DISK_PART[$i]#*/dev/}"
+done
+if [[ "$DEBBUG" ]];then
+    title_gen "parted -lm"
+    while read line; do
+        [[ "$line" ]] && echo "$line"
+    done < <(echo "$PARTEDLM" )
+    title_gen "lsblk -o KNAME,TYPE,FSTYPE,SIZE,LABEL (filtered)"
+    #UUID et MODEL are buggy: LANGUAGE=C lsblk -o KNAME,TYPE,FSTYPE,SIZE,LABEL,MODEL,UUID
+    while read line; do
+        [[ "$line" ]] && [[ ! "$line" =~ squashfs ]] && [[ ! "$line" =~ "sr[0-9]" ]] && echo "$line"
+    done < <(LANGUAGE=C LC_ALL=C lsblk -o KNAME,TYPE,FSTYPE,SIZE,LABEL )
+    title_gen "lsblk -o KNAME,ROTA,RO,RM,STATE,MOUNTPOINT (filtered)"
+    while read line; do
+        [[ "$line" ]] && [[ ! "$line" =~ loop ]] && [[ ! "$line" =~ "sr[0-9]" ]] && echo "$line"
+    done < <(LANGUAGE=C LC_ALL=C lsblk -o KNAME,ROTA,RO,RM,STATE,MOUNTPOINT )
+    title_gen "mount (filtered)"
+    while read line; do
+        [[ "$line" =~ "dev/" ]] || [[ "$line" =~ "pool/" ]] && [[ ! "$line" =~ hugetlbfs ]] && [[ ! "$line" =~ tmpfs ]] && [[ ! "$line" =~ mqueue ]] && [[ ! "$line" =~ devpts ]] && echo "$line"
+    done < <(mount )
+    #debug
+    title_gen "ls (filtered)"
+    a=/sys/block/;for x in $(ls $a);do if [[ ! "$x" =~ ram ]] && [[ ! "$x" =~ oop ]] && [[ ! "$x" =~ sr ]];then b="";for y in $(ls $a$x);do b="$b $y";done;echo "$a$x: $b";fi;done
+    a="";for x in $(ls /dev);do if [[ ! "$x" =~ ram ]] && [[ ! "$x" =~ oop ]] && [[ ! "$x" =~ tty ]] && [[ ! "$x" =~ vcs ]] && [[ ! "$x" =~ i2c ]] \
+    && [[ ! "$x" =~ drm_ ]] && [[ ! "$x" =~ network_ ]] && [[ ! "$x" =~ vbox ]];then a="$a $x";fi;done;echo "/dev: $a"
+    if [[ "$(ls /dev | grep -ix md )" ]];then
+        a="";for x in $(ls /dev/md);do a="$a $x";done;echo "ls /dev/md: $a"
+    fi
+    #often /dev/mapper contains only 1 'control' file.
+    for y in /dev/mapper /dev/cciss; do
+        if [[ -d $y ]];then
+            a="";for x in $(ls $y);do
+                    [[ "$x" != "control" ]] && a="$a $x"
+            done
+            [[ "$a" ]] && echo "ls $y: $a"
+        fi
+    done
+fi
 }
 
 ###################### DETERMINE PARTNB FROM A PARTNAME ################
 determine_partnb() {
 local partnbi
-#Example of input : "sda1"
+#Ex of input: "sda1"
 for ((partnbi=1;partnbi<=NBOFPARTITIONS;partnbi++)); do
 	[[ "$1" = "${LISTOFPARTITIONS[$partnbi]}" ]] && PARTNB="$partnbi"
 done
 }
 
-########################## CHECK IF WUBI ###############################
-check_wubi_existence() {
-local i
-TOTAL_QTY_OF_OS_INCLUDING_WUBI="$TOTAL_QUANTITY_OF_OS"; QTY_WUBI=0
-WUBILDR=""
-ROOTDISKMISSING=""
-for ((i=1;i<=NBOFPARTITIONS;i++)); do
-	if [[ -f "${BLKIDMNT_POINT[$i]}/ubuntu/disks/root.disk" ]] ;then
-		echo "There is Wubi inside ${LISTOFPARTITIONS[$i]}"
-		(( TOTAL_QTY_OF_OS_INCLUDING_WUBI += 1 )); (( QTY_WUBI += 1 ))
-		OS_NAME[$TOTAL_QTY_OF_OS_INCLUDING_WUBI]="$Ubuntu_installed_in_Windows_via_Wubi"
-		OS_PARTITION[$TOTAL_QTY_OF_OS_INCLUDING_WUBI]="${LISTOFPARTITIONS[$i]}"
-		WUBI[$QTY_WUBI]="$TOTAL_QTY_OF_OS_INCLUDING_WUBI"
-		WUBI_PART[$QTY_WUBI]="$i"
-		BLKIDMNT_POINTWUBI[$QTY_WUBI]="${BLKIDMNT_POINT[$i]}"
-		MOUNTPOINTWUBI[$QTY_WUBI]="/mnt/$PACK_NAME/wubi$QTY_WUBI"
-		mkdir -p "${MOUNTPOINTWUBI[$QTY_WUBI]}"
+############################ CHECK DISK TYPES ##########################
+check_disk_types() {
+local d e f TMPDISK
+GPT_DISK_WITHOUT_BIOS_BOOT=""
+WIN_ON_GPT=""
+WIN_ON_DOS=""
+MSDOSPRESENT=""
+NB_EFIPARTONGPT=0; NB_BISEFIPART=0 #cant move to check_part_types
+for ((d=1;d<=NBOFDISKS;d++)); do
+    BIOS_BOOT_DISK[$d]=no-BIOSboot
+	TMPDISK="${LISTOFDISKS[$d]}"
+	if [[ "$(LANGUAGE=C LC_ALL=C fdisk -l "$TMPDISK" 2>/dev/null | grep -i GPT | grep -i Disklabel )" ]] \
+	&& [[ ! "$(echo "$PARTEDLM" | grep -i msdos | grep "${TMPDISK}:" )" ]] \
+	&& [[ ! "$(echo "$PARTEDLM" | grep -i loop | grep "${TMPDISK}:" )" ]] \
+	|| [[ "$(echo "$PARTEDLM" | grep -i gpt | grep "${TMPDISK}:" )" ]];then
+		GPT_DISK[$d]=is-GPT
+		f=""
+		for e in $PARTEDLM;do #no "" !
+			if [[ "$e" =~ / ]];then
+				[[ "$e" =~ "${TMPDISK}:" ]] && f=ok || f=""
+			fi
+			[[ "$f" ]] && [[ "$e" =~ bios_grub ]] && BIOS_BOOT_DISK[$d]=hasBIOSboot
+		done
+        [[ "$(LANGUAGE=C LC_ALL=C fdisk -l "$TMPDISK" 2>/dev/null | grep 'BIOS boot' )" ]] && BIOS_BOOT_DISK[$d]=hasBIOSboot  #security in case parted KO
+		[[ "${BIOS_BOOT_DISK[$d]}" != hasBIOSboot ]] && GPT_DISK_WITHOUT_BIOS_BOOT=yes
+	else
+		GPT_DISK[$d]=notGPT #table may be loop
+		MSDOSPRESENT=yes #used by fillin_bootflag_combobox
 	fi
-	[[ -f "${BLKIDMNT_POINT[$i]}/wubildr" ]] && WUBILDR=yes
+	[[ "$(ls -l /dev/disk/by-id 2>/dev/null | grep " usb-" | grep "${LISTOFDISKS[$d]#*/dev/}")" ]] \
+	&& USBDISK[$d]=usb-disk || USBDISK[$d]=not-usb
+
+	[[ "$(grep dev/mmc <<< $TMPDISK )" ]] && MMCDISK[$d]=mmc-disk || MMCDISK[$d]=not-mmc
+
+	BOOTFLAG_NEEDED[$d]=""
+	if [[ "${GPT_DISK[$d]}" != is-GPT ]];then #some BIOS need a flag on primary partition
+		p="$(LANGUAGE=C LC_ALL=C fdisk -l $TMPDISK 2>/dev/null | grep / | grep '*' )"
+		if [[ ! "$(echo $p  | grep "${TMPDISK}1 " )" ]] && [[ ! "$(echo $p | grep "${TMPDISK}2 " )" ]] \
+		&& [[ ! "$(echo $p | grep "${TMPDISK}3 " )" ]] && [[ ! "$(echo $p | grep "${TMPDISK}4 " )" ]] \
+		|| [[ "$(echo $p | grep Empty )" ]];then
+			BOOTFLAG_NEEDED[$d]=setflag
+		fi
+	fi
+	
+	EFI_DISK[$d]=has-noESP #init
+	REALWINONDISC[$d]=no-wind
+	for ((i=1;i<=NBOFPARTITIONS;i++)); do
+		if [[ "${REALWIN[$i]}" ]] && [[ "${DISKNB_PART[$i]}" = "$d" ]];then
+			REALWINONDISC[$d]=has-win
+			[[ "${GPT_DISK[$d]}" = is-GPT ]] && WIN_ON_GPT=y || WIN_ON_DOS=y
+		fi
+	done
 done
-[[ "$QUANTITY_OF_REAL_WINDOWS" != 0 ]] && [[ "$QTY_WUBI" = 0 ]] && [[ "$WUBILDR" ]] && ROOTDISKMISSING=yes
-#http://ubuntu-with-wubi.blogspot.ca/2011/08/missing-rootdisk.html
 }
+
 
 ############################ CHECK PART TYPES ##########################
 check_part_types() {
@@ -127,81 +196,70 @@ QTY_BOOTPART=0
 QTY_WINBOOTTOREPAIR=0
 SEP_BOOT_PARTS_PRESENCE=""
 SEP_USR_PARTS_PRESENCE=""
-EFIFILEPRESENCE=""
+EFIFILPRESENT=""
 WINEFIFILEPRESENCE=""
 BKPFILEPRESENCE=""
+WINBKPFILEPRESENCE=""
 for ((i=1;i<=NBOFPARTITIONS;i++)); do
 
-	DISABLE_OS[$i]=""
-	temp="${BLKIDMNT_POINT[$i]}/etc/default/grub"
-	if [[ -f "${temp}" ]];then
-		echo "
-
-$DASH ${temp#*boot-sav/} :
-		"
-		cat "${temp}"
-		echo "
-
-"
-		[[ "$(cat "${temp}" | grep "GRUB_DISABLE_OS" | grep -v '#GRUB_DISABLE_OS' )" ]] && DISABLE_OS[$i]=yes
-	fi
-
-	temp="${BLKIDMNT_POINT[$i]}/etc/grub.d/"
-	CUSTOMIZER[$i]=standard
-	if [[ -d "$temp" ]];then
-		echo "
-$DASH ${temp#*boot-sav/} :"
-		ls -l "${BLKIDMNT_POINT[$i]}/etc" | grep grub.d #http://forum.ubuntu-fr.org/viewtopic.php?pid=9698751#p9698751
-		ls -l "$temp"
-		echo "
-"
-		[[ "$(ls "$temp" | grep prox)" ]] || [[ -d "${temp}bin" ]] && CUSTOMIZER[$i]=customized
-		temp="${temp}40_custom"
-		if [[ -f "$temp" ]];then
-			temp2="$(cat "$temp" | grep -v "# " | grep -v '#!' | grep -v "exec tail")"
-			if [[ "$temp2" ]];then
-				echo "$DASH ${temp#*boot-sav/} :"
-				echo "$temp2
-
-"
+	tempd=""
+	DOCGRUB[$i]=""
+	for z in "${BLKIDMNT_POINT[$i]}"/{,usr/}share/doc/;do
+		if [[ -d "$z" ]];then
+			check_grubdoc_1
+			if [[ -d "$z/packages" ]];then #Suse
+				z="$z/packages"
+				check_grubdoc_1
 			fi
 		fi
-	fi
-
-	DOCGRUB[$i]=no-docgrub
-	temp="${BLKIDMNT_POINT[$i]}/usr/share/doc/"
-	temp2="${BLKIDMNT_POINT[$i]}/share/doc/"
-	temp3=""
-	[[ -d "${temp}grub-pc" ]] || [[ -d "${temp2}grub-pc" ]] \
-	|| [[ -d "${temp}grub2-2.0" ]] || [[ -d "${temp2}grub2-2.0" ]] && temp3=grub-pc
-	[[ -d "${temp}grub-efi" ]] || [[ -d "${temp2}grub-efi" ]] \
-	|| [[ -f "${BLKIDMNT_POINT[$i]}/sbin/grub-crypt" ]] && DOCGRUB[$i]=grub-efi
-	if [[ "$temp3" ]];then
-		[[ "${DOCGRUB[$i]}" = grub-efi ]] && DOCGRUB[$i]=pc-n-efi || DOCGRUB[$i]=grub-pc
-	fi
+	done
+	for z in "${BLKIDMNT_POINT[$i]}"/{,usr/}share/doc/;do
+		if [[ -d "$z" ]];then
+			check_grubdoc_2
+			if [[ -d "$z/packages" ]];then #Suse
+				z="$z/packages"
+				check_grubdoc_2
+			fi
+		fi
+	done
+	[[ -f "${BLKIDMNT_POINT[$i]}/sbin/grub-crypt" ]] && [[ ! "$(grep efi <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="grub-efi ${DOCGRUB[$i]}" #TODO which distro ?
+	for z in "${BLKIDMNT_POINT[$i]}"/{,usr/}share/doc/;do
+		if [[ -d "$z" ]];then
+			lsz="$(ls $z 2>/dev/null | grep grub)"
+			[[ "$lsz" ]] && [[ ! "${DOCGRUB[$i]}" ]] && DOCGRUB[$i]="grub1 ${DOCGRUB[$i]}"
+			if [[ "$(grep signed <<< "$lsz" )" ]];then
+				[[ ! "$(grep sign <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="signed ${DOCGRUB[$i]}"
+			else
+				for zz in $lsz;do
+					[[ -d "$z$zz" ]] && [[ "$(ls "$z$zz" 2>/dev/null | grep signed)" ]] && [[ ! "$(grep sign <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="${zz}-signed ${DOCGRUB[$i]}"
+				done
+			fi
+		fi
+	done
+	[[ ! "${DOCGRUB[$i]}" ]] && DOCGRUB[$i]=no-docgrub
 
 	GRUBTYPE_OF_PART[$i]=nogrubinstall
 	GRUBVER[$i]=nogrub
 	for gg in /usr/sbin/ /usr/bin/ /sbin/ /bin/;do #not sure "type" is available in all distros
-		for gi in grub-install grub2-install grub-install.unsupported;do
-			if [[ -f "${BLKIDMNT_POINT[$i]}${gg}${gi}" ]];then
-				GRUBTYPE_OF_PART[$i]=${gi}
-				GRUBVER[$i]=grub2
+		for gi in grub-install.unsupported grub-install grub2-install;do
+			if ( [[ ! -f "${BLKIDMNT_POINT[$i]}${gg}grub" ]] || [[ "${GRUBVER[$i]}" != grub2 ]] ) && [[ -f "${BLKIDMNT_POINT[$i]}$gg$gi" ]];then #prefers grub2
+				GRUBTYPE_OF_PART[$i]=$gi
+				GRUBTYPE_OF_PARTZ[$i]=$gg$gi
+				[[ -f "${BLKIDMNT_POINT[$i]}${gg}grub" ]] && GRUBVER[$i]=grub1 || GRUBVER[$i]=grub2
 			fi
 		done
 	done
 	if [[ "${GRUBVER[$i]}" = grub2 ]] && [[ -d "${BLKIDMNT_POINT[$i]}/etc/default" ]] \
 	&& [[ ! -f "${BLKIDMNT_POINT[$i]}/etc/default/grub" ]] \
-	|| [[ "${GRUBTYPE_OF_PART[$i]}" =~ unsupported ]];then
+	|| [[ "${GRUBTYPE_OF_PART[$i]}" =~ unsup ]];then
 		GRUBVER[$i]=grub1 #care of sep /usr
 		[[ ! -f "${BLKIDMNT_POINT[$i]}/etc/default/grub" ]] && echo "No ${LISTOFPARTITIONS[$i]}/etc/default/grub"
-		[[ "${GRUBTYPE_OF_PART[$i]}" =~ unsupported ]] && echo "${LISTOFPARTITIONS[$i]} has unsupported GRUB."
 	fi
-
-	UPDATEGRUB_OF_PART[$i]=no-update-grub
+	
+	UPDATEGRUB_OF_PART[$i]=noupdategrub
 	for gg in /usr/sbin/ /usr/bin/ /sbin/ /bin/;do
 		for gm in grub-mkconfig grub2-mkconfig;do
-			[[ -f "${BLKIDMNT_POINT[$i]}${gg}${gm}" ]] && UPDATEGRUB_OF_PART[$i]="${gm} -o /boot/grub" #then complete with 2/grub.cfg or /grub.cfg
+			[[ -f "${BLKIDMNT_POINT[$i]}$gg$gm" ]] && UPDATEGRUB_OF_PART[$i]="$gm -o /boot/grub" #then complete with 2/grub.cfg or /grub.cfg
 		done
 	done
 	for gg in /usr/sbin/ /usr/bin/ /sbin/ /bin/;do
@@ -214,13 +272,14 @@ $DASH ${temp#*boot-sav/} :"
 	done
 	
 	GRUBOK_OF_PART[$i]=""
-	if [[ "${GRUBVER[$i]}" = grub1 ]] || [[ "${UPDATEGRUB_OF_PART[$i]}" != no-update-grub ]] \
+	if [[ "${GRUBVER[$i]}" = grub1 ]] || [[ "${UPDATEGRUB_OF_PART[$i]}" != noupdategrub ]] \
 	&& [[ "${GRUBTYPE_OF_PART[$i]}" != nogrubinstall ]];then
 		GRUBOK_OF_PART[$i]=ok
 		(( QTY_OF_PART_WITH_GRUB += 1 ))
 		LIST_OF_PART_WITH_GRUB[$QTY_OF_PART_WITH_GRUB]="$i"
 	fi
 	
+	APTTYP[$i]=""
 	if [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/apt-get" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/yum" ]] \
 	|| [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/zypper" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/pacman" ]] \
 	|| [[ -f "${BLKIDMNT_POINT[$i]}/bin/apt-get" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/yum" ]] \
@@ -229,13 +288,14 @@ $DASH ${temp#*boot-sav/} :"
 		LIST_OF_PART_WITH_APTGET[$QTY_OF_PART_WITH_APTGET]="$i"
 		if [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/apt-get" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/apt-get" ]];then
 			APTTYP[$i]=apt-get #Debian
-			YESTYP[$i]="-y --force-yes"
+			YESTYP[$i]="-y"
 			INSTALLTYP[$i]=install
-			PURGETYP[$i]=purge
+			PURGETYP[$i]="purge --allow-remove-essential"
 			POLICYTYP[$i]="apt-cache policy"
 			CANDIDATETYP[$i]="grep Candidate"
 			CANDIDATETYP2[$i]="grep -v none"
-			UPDATETYP[$i]="-y --force-yes update"
+			UPDATETYP[$i]="-y update"
+			PACKVERTYP[$i]='dpkg-query -W -f=${Version}'
 		elif [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/yum" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/yum" ]];then
 			APTTYP[$i]=yum #fedora
 			YESTYP[$i]=-y
@@ -244,80 +304,112 @@ $DASH ${temp#*boot-sav/} :"
 			POLICYTYP[$i]="yum info name"
 			CANDIDATETYP[$i]="grep Available"
 			UPDATETYP[$i]=makecache
+			PACKVERTYP[$i]='rpm -q --qf=%{version}'
 		elif [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/zypper" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/zypper" ]];then
-			APTTYP[$i]=zypper #opensuse
-			YESTYP[$i]=-y
-			INSTALLTYP[$i]=install
-			PURGETYP[$i]=remove
+			APTTYP[$i]='zypper --non-interactive' #opensuse
+			YESTYP[$i]=''
+			INSTALLTYP[$i]=in
+			PURGETYP[$i]=rm
 			POLICYTYP[$i]="zypper info"
 			CANDIDATETYP[$i]="grep Installed"
 			UPDATETYP[$i]=refresh
+			PACKVERTYP[$i]="zypper se -s --match-exact"
 		elif [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/pacman" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/pacman" ]];then
 			APTTYP[$i]=pacman #arch
-			YESTYP[$i]=--noconfirm
+			YESTYP[$i]=''
 			INSTALLTYP[$i]=-Sy
 			PURGETYP[$i]=-R
 			POLICYTYP[$i]="pacman -Syw --noconfirm"
 			CANDIDATETYP[$i]="grep download"
 			UPDATETYP[$i]="-Sy --noconfirm pacman"
 			UPDATETYP2[$i]=pacman-db-upgrade
+			PACKVERTYP[$i]="pacman -Q"
 		#elif [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/urpmi" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/urpmi" ]];then
 		#	APTTYP[$i]=urpmi #http://wiki.mandriva.com/fr/Installer_et_supprimer_des_logiciels
 		#	YESTYP[$i]=""
 		#	INSTALLTYP[$i]=urpmi
 		#	PURGETYP[$i]=urpme
-		#	POLICYTYP[$i]="zypper info"
+		#	POLICYTYP[$i]=
 		#	CANDIDATETYP[$i]="grep Installed"
 		#	UPDATETYP[$i]="urpmi.update -a"
+		#elif [[ -f "${BLKIDMNT_POINT[$i]}/usr/bin/emerge" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/bin/emerge" ]];then
+		#	APTTYP[$i]=emerge #http://en.gentoo-wiki.com/wiki/Emerge
+		#	YESTYP[$i]=
+		#	INSTALLTYP[$i]=""
+		#	PURGETYP[$i]=--unmerge
+		#	POLICYTYP[$i]="emerge --search" #http://www.gentoo.org/doc/en/handbook/handbook-amd64.xml?part=2&chap=1
+		#	CANDIDATETYP[$i]="grep installed"
+		#	CANDIDATETYP2[$i]="grep -v 'Not Installed'"
+		#	UPDATETYP[$i]="--sync"
 		fi
 	else
 		APTTYP[$i]=nopakmgr
 	fi
 
-	LIB64=""
-	if [[ -d "${BLKIDMNT_POINT[$i]}/lib64" ]];then
-		[[ "$(ls "${BLKIDMNT_POINT[$i]}/lib64" | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]] && LIB64=yes
+	temp="${BLKIDMNT_POINT[$i]}/etc/grub.d/"
+	CUSTOMIZER[$i]=std-grub.d
+	if [[ -d "$temp" ]];then
+		[[ "$(ls "$temp" 2>/dev/null | grep prox)" ]] || [[ -d "${temp}bin" ]] && CUSTOMIZER[$i]=customized
+#		if [[ ! "$1" ]];then
+#			title_gen "${temp#*boot-sav/} (filtered)"
+#			ls -l "${BLKIDMNT_POINT[$i]}/etc" 2>/dev/null | grep grub.d #http://forum.ubuntu-fr.org/viewtopic.php?pid=9698751#p9698751
+#			ls -l "$temp" 2>/dev/null | grep -v README | grep -v total
+#		fi
+#		temp="${temp}40_custom"
+#		if [[ -f "$temp" ]];then
+#			temp2="$(cat "$temp" | grep -v "# " | grep -v '#!' | grep -v "exec tail")"
+#			if [[ "$temp2" ]];then
+#				if [[ ! "$1" ]];then
+#                   title_gen "${temp#*boot-sav/}"
+#                   echo "$temp2"
+#                fi
+#			fi
+#		fi
+	else
+		CUSTOMIZER[$i]=no--grub.d
 	fi
-	if [[ -d "${BLKIDMNT_POINT[$i]}/usr/lib64" ]];then #http://paste.ubuntu.com/1072493 , http://forum.ubuntu-fr.org/viewtopic.php?pid=10355311#p10355311
-		[[ "$(ls "${BLKIDMNT_POINT[$i]}/usr/lib64" | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]] && LIB64=yes
-	fi
+
+	LIB64[$i]=""
+	for z in "${BLKIDMNT_POINT[$i]}"/{,usr/}lib64;do
+		if [[ -d "$z" ]];then #http://forum.ubuntu-fr.org/viewtopic.php?pid=10355311#p10355311
+			[[ "$(ls "$z" 2>/dev/null | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]] && LIB64[$i]=yes
+		fi
+	done
 	if [[ "${CURRENTSESSIONPARTITION}" = "${LISTOFPARTITIONS[$i]}" ]] && [[ "$(uname -m)" = i686 ]] \
-	|| [[ ! "$LIB64" ]] || [[ "$ARCHIPC" = 32 ]];then
+	|| ( [[ "${CURRENTSESSIONPARTITION}" != "${LISTOFPARTITIONS[$i]}" ]] && [[ ! "$LIB64[$i]" ]] ) || [[ "$ARCHIPC" = 32 ]];then
 		ARCH_OF_PART[$i]=32
 		(( QTY_OF_32BITS_PART += 1 ))
-		if [[ -d "${BLKIDMNT_POINT[$i]}/lib64" ]];then #debug, eg http://paste.ubuntu.com/1195587
-			if [[ "$(ls "${BLKIDMNT_POINT[$i]}/lib64" | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]];then
-				b=""; for a in $(ls "${BLKIDMNT_POINT[$i]}/lib64");do b="$a $b";done;echo "$PLEASECONTACT : ${BLKIDMNT_POINT[$i]}/lib64: $b"
+		for z in "${BLKIDMNT_POINT[$i]}"/{,usr/}lib64;do
+			if [[ -d "$z" ]];then #debug
+				if [[ "$(ls "$z" 2>/dev/null | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]];then
+					b=""; for a in $(ls "$z" 2>/dev/null);do b="$a $b";done;echo "$PLEASECONTACT : $z: $b"
+				fi
 			fi
-		fi
-		if [[ -d "${BLKIDMNT_POINT[$i]}/usr/lib64" ]];then
-			if [[ "$(ls "${BLKIDMNT_POINT[$i]}/usr/lib64" | grep -vi libfakeroot | grep -vi gnomenu | grep -vi elilo )" ]];then
-				b=""; for a in $(ls "${BLKIDMNT_POINT[$i]}/usr/lib64");do b="$a $b";done;echo "$PLEASECONTACT : ${BLKIDMNT_POINT[$i]}/usr/lib64: $b"
-			fi
-		fi
+		done
 	else
 		ARCH_OF_PART[$i]=64
 		(( QTY_OF_64BITS_PART += 1 ))
 	fi
 
-	if [[ ! -d "${BLKIDMNT_POINT[$i]}/boot" ]];then
-		BOOTPRESENCE_OF_PART[$i]=no-boot #REINSTALL_POSSIBLE will be Yes only if a separate boot exists
-	elif [[ ! "$(ls "${BLKIDMNT_POINT[$i]}/boot" )" ]];then
-		BOOTPRESENCE_OF_PART[$i]=no-boot
-	elif [[ ! "$(ls "${BLKIDMNT_POINT[$i]}/boot" | grep vmlinuz )" ]] \
-	|| [[ ! "$(ls "${BLKIDMNT_POINT[$i]}/boot" | grep initr )" ]];then #initramfs and vmlinuz-linux for Arch
-		BOOTPRESENCE_OF_PART[$i]=no-kernel
-		[[ ! "$(ls "${BLKIDMNT_POINT[$i]}/boot" | grep -ix bcd )" ]] && echo "$DASH No kernel in ${BLKIDMNT_POINT[$i]}/boot:
-$(ls "${BLKIDMNT_POINT[$i]}/boot")
-
-"
-	else # REINSTALL_POSSIBLE will be Yes
-		BOOTPRESENCE_OF_PART[$i]=with-boot
+	BOOT_AND_KERNEL_IN[$i]=no---boot
+	tmp="${BLKIDMNT_POINT[$i]}/boot"
+	if [[ -d "$tmp" ]] && [[ ! "$(grep -i /boot/efi <<< "${BLKIDMNT_POINT[$i]}/" )" ]];then
+		if [[ "$(ls "$tmp" 2>/dev/null)" ]] && [[ ! "$(ls "$tmp" 2>/dev/null | grep -ix bcd )" ]];then
+			if [[ "$(ls "$tmp" 2>/dev/null | grep vmlinuz )" ]] && [[ "$(ls "$tmp" 2>/dev/null | grep initr )" ]];then #initramfs and vmlinuz-linux for Arch
+				BOOT_AND_KERNEL_IN[$i]=with-boot
+			else #if [[ ! "$(ls "$tmp" 2>/dev/null | grep '.efi' )" ]];then
+				BOOT_AND_KERNEL_IN[$i]=no-kernel
+				[[ "$DEBBUG" ]] && echo "
+$DASH No kernel in ${LISTOFPARTITIONS[$i]}/boot:
+$(ls "$tmp" )"
+			fi
+		fi
 	fi
+
 
 	if [[ ! -d "${BLKIDMNT_POINT[$i]}/usr" ]];then
 		USRPRESENCE_OF_PART[$i]=no---usr # REINSTALL_POSSIBLE will be Yes only if a separate /usr exists
-	elif [[ ! "$(ls "${BLKIDMNT_POINT[$i]}/usr")" ]];then
+	elif [[ ! "$(ls "${BLKIDMNT_POINT[$i]}/usr" 2>/dev/null )" ]];then
 		USRPRESENCE_OF_PART[$i]=emptyusr
 	else # REINSTALL_POSSIBLE will be Yes
 		USRPRESENCE_OF_PART[$i]=with--usr
@@ -334,8 +426,8 @@ $(ls "${BLKIDMNT_POINT[$i]}/boot")
 
 	if [[ -f "${BLKIDMNT_POINT[$i]}/etc/fstab" ]];then
 		if [[ "$(cat "${BLKIDMNT_POINT[$i]}/etc/fstab" | grep /boot/efi | grep -v '#' )" ]];then
-			EFI_IN_FSTAB_OF_PART[$i]=fstab-has-bad-efi
-			EFI_OF_PART[$i]=""
+			FSTAB_HASGOODEFI_OFPART[$i]=fstab-has-bad-efi
+			ESP_IN_FSTAB_OF_PART[$i]=""
 			b=""
 			while read line;do
 				a="$(echo "$line" | grep /boot/efi | grep -v '#' )" #eg. UUID=0EC9-AA63  /boot/efi       vfat    defaults        0       1
@@ -348,26 +440,27 @@ $(ls "${BLKIDMNT_POINT[$i]}/boot")
 				UUID_OF_EFIPART="${b##*=}"
 				for ((uuidp=1;uuidp<=NBOFPARTITIONS;uuidp++)); do
 					if [[ "$UUID_OF_EFIPART" =~ "${PART_UUID[$uuidp]}" ]];then
-						EFI_OF_PART[$i]="$uuidp"
-						EFI_IN_FSTAB_OF_PART[$i]=fstab-has-goodEFI
+						ESP_IN_FSTAB_OF_PART[$i]="$uuidp"
+						FSTAB_HASGOODEFI_OFPART[$i]=fstab-has-goodEFI
 					fi
 				done
-			elif [[ "$b" =~ dev/ ]];then
-				PARTOF_EFIPART="${b##*dev/}"
+			elif [[ "$b" =~ / ]];then
+				PARTOF_EFIPART="$b"
 				for ((uuidp=1;uuidp<=NBOFPARTITIONS;uuidp++)); do
 					if [[ "$PARTOF_EFIPART" =~ "${LISTOFPARTITIONS[$uuidp]}" ]];then
-						EFI_OF_PART[$i]="$uuidp"
-						EFI_IN_FSTAB_OF_PART[$i]=fstab-has-goodEFI
+						ESP_IN_FSTAB_OF_PART[$i]="$uuidp"
+						FSTAB_HASGOODEFI_OFPART[$i]=fstab-has-goodEFI
 					fi
 				done
 			fi
-			echo "/boot/efi detected in the fstab of ${LISTOFPARTITIONS[$i]}: $b (${LISTOFPARTITIONS[${EFI_OF_PART[$i]}]})"
+			[[ "$DEBBUG" ]] && echo "
+$DASH /boot/efi detected in the fstab of ${LISTOFPARTITIONS[$i]#*/dev/}: $b (${LISTOFPARTITIONS[${ESP_IN_FSTAB_OF_PART[$i]}]})"
 		else
-			EFI_IN_FSTAB_OF_PART[$i]=fstab-without-efi
+			FSTAB_HASGOODEFI_OFPART[$i]=fstab-without-efi
 		fi
 		if [[ "$(cat "${BLKIDMNT_POINT[$i]}/etc/fstab" | grep /boot | grep -v /boot/ | grep -v '#' )" ]];then
-			BOOT_IN_FSTAB_OF_PART[$i]=fstab-has-bad-boot
-			BOOT_OF_PART[$i]=""
+			FSTAB_HAS_GOOD_BOOT[$i]=fstab-has-bad-boot
+			BOOTPART_IN_FSTAB_OF[$i]=""
 			b=""
 			while read line;do
 				a="$(echo "$line" | grep /boot | grep -v /boot/ | grep -v '#' )" #eg. UUID=0EC9-AA63  /boot       vfat    defaults        0       1
@@ -380,25 +473,26 @@ $(ls "${BLKIDMNT_POINT[$i]}/boot")
 				UUID_OF_BOOTPART="${b##*=}"
 				for ((uuidp=1;uuidp<=NBOFPARTITIONS;uuidp++)); do
 					if [[ "$UUID_OF_BOOTPART" =~ "${PART_UUID[$uuidp]}" ]] && [[ "${PART_WITH_OS[$uuidp]}" = no-os ]];then
-						BOOT_OF_PART[$i]="$uuidp"
-						BOOT_IN_FSTAB_OF_PART[$i]=fstab-has-goodBOOT
+						BOOTPART_IN_FSTAB_OF[$i]="$uuidp"
+						FSTAB_HAS_GOOD_BOOT[$i]=fstab-has-goodBOOT
 					fi
 				done
-			elif [[ "$b" =~ dev/ ]];then
-				PARTOF_BOOTPART="${b##*dev/}"
+			elif [[ "$b" =~ / ]];then
+				PARTOF_BOOTPART="$b"
 				for ((uuidp=1;uuidp<=NBOFPARTITIONS;uuidp++)); do
 					if [[ "$PARTOF_BOOTPART" =~ "${LISTOFPARTITIONS[$uuidp]}" ]] && [[ "${PART_WITH_OS[$uuidp]}" = no-os ]];then
-						BOOT_OF_PART[$i]="$uuidp"
-						BOOT_IN_FSTAB_OF_PART[$i]=fstab-has-goodBOOT
+						BOOTPART_IN_FSTAB_OF[$i]="$uuidp"
+						FSTAB_HAS_GOOD_BOOT[$i]=fstab-has-goodBOOT
 					fi
 				done
 			fi
-			echo "/boot detected in the fstab of ${LISTOFPARTITIONS[$i]}: $b (${LISTOFPARTITIONS[${BOOT_OF_PART[$i]}]})"
+			[[ "$DEBBUG" ]] && echo "
+$DASH /boot detected in the fstab of ${LISTOFPARTITIONS[$i]#*/dev/}: $b (${LISTOFPARTITIONS[${BOOTPART_IN_FSTAB_OF[$i]}]})"
 		else
-			BOOT_IN_FSTAB_OF_PART[$i]=fstab-without-boot
+			FSTAB_HAS_GOOD_BOOT[$i]=fstab-without-boot
 		fi
-		if [[ "$(cat "${BLKIDMNT_POINT[$i]}/etc/fstab" | grep /usr | grep -v '#' | grep -v swap )" ]];then
-			USR_IN_FSTAB_OF_PART[$i]=fstab-has-bad-usr #http://paste.ubuntu.com/1099854
+		if [[ "$(cat "${BLKIDMNT_POINT[$i]}/etc/fstab" | grep /usr | grep -v /usr/ | grep -v '#' | grep -v swap)" ]];then
+			USR_IN_FSTAB_OF_PART[$i]=fstab-has-bad-usr
 			USR_OF_PART[$i]=""
 			b=""
 			while read line;do
@@ -416,8 +510,8 @@ $(ls "${BLKIDMNT_POINT[$i]}/boot")
 						USR_IN_FSTAB_OF_PART[$i]=fstab-has-goodUSR
 					fi
 				done
-			elif [[ "$b" =~ dev/ ]];then
-				PARTOF_USRPART="${b##*dev/}"
+			elif [[ "$b" =~ / ]];then
+				PARTOF_USRPART="$b"
 				for ((uuidp=1;uuidp<=NBOFPARTITIONS;uuidp++)); do
 					if [[ "$PARTOF_USRPART" =~ "${LISTOFPARTITIONS[$uuidp]}" ]] && [[ "${PART_WITH_OS[$uuidp]}" = no-os ]];then
 						USR_OF_PART[$i]="$uuidp"
@@ -425,63 +519,57 @@ $(ls "${BLKIDMNT_POINT[$i]}/boot")
 					fi
 				done
 			fi
-			echo "/usr detected in the fstab of ${LISTOFPARTITIONS[$i]}: $b (${LISTOFPARTITIONS[${USR_OF_PART[$i]}]})"
+			[[ "$DEBBUG" ]] && echo "
+$DASH /usr detected in the fstab of ${LISTOFPARTITIONS[$i]#*/dev/}: $b (${LISTOFPARTITIONS[${USR_OF_PART[$i]}]})"
 		else
 			USR_IN_FSTAB_OF_PART[$i]=fstab-without-usr
 		fi
 	else
-		EFI_IN_FSTAB_OF_PART[$i]=part-has-no-fstab
-		BOOT_IN_FSTAB_OF_PART[$i]=part-has-no-fstab
+		FSTAB_HASGOODEFI_OFPART[$i]=part-has-no-fstab
+		FSTAB_HAS_GOOD_BOOT[$i]=part-has-no-fstab
 		USR_IN_FSTAB_OF_PART[$i]=part-has-no-fstab
 	fi
 	
-	PART_WITH_SEPARATEBOOT[$i]=not-sepboot
+	PART_WITH_SEPARATEBOOT[$i]=not--sepboot
 	if [[ "${PART_WITH_OS[$i]}" != no-os ]];then
-		PART_WITH_SEPARATEBOOT[$i]=not-sepboot
-	elif [[ "$(ls "${BLKIDMNT_POINT[$i]}/" | grep vmlinuz )" ]] && [[ "$(ls "${BLKIDMNT_POINT[$i]}/" | grep initr )" ]];then
-		echo "[debug] ${LISTOFPARTITIONS[$i]} contains a kernel, so it is probably a /boot partition."
+		PART_WITH_SEPARATEBOOT[$i]=not--sepboot
+	elif [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep vmlinuz )" ]] && [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep initr )" ]] \
+	&& [[ "$(blkid | grep "${LISTOFPARTITIONS[$i]}:" | grep zfs_member )" ]];then
+		PART_WITH_SEPARATEBOOT[$i]=is--zfs-boot
+	elif [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep vmlinuz )" ]] && [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep initr )" ]];then
+		[[ "$DEBBUG" ]] && echo "[debug] ${LISTOFPARTITIONS[$i]} contains a kernel, so it is probably a /boot partition."
 		(( QTY_BOOTPART += 1 ))
-		PART_WITH_SEPARATEBOOT[$i]=is-sepboot
+		PART_WITH_SEPARATEBOOT[$i]=is---sepboot
 		SEP_BOOT_PARTS_PRESENCE=yes
-	elif [[ ! "$(echo "$BLKID" | grep "/dev/${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="vfat"' )" ]] \
-	&& [[ ! "$(echo "$BLKID" | grep "/dev/${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="ntfs"' )" ]];then
+	elif [[ ! "$(echo "$BLKID" | grep "${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="vfat"' )" ]] \
+	&& [[ ! "$(echo "$BLKID" | grep "${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="ntfs"' )" ]];then
 		PART_WITH_SEPARATEBOOT[$i]=maybesepboot
 		SEP_BOOT_PARTS_PRESENCE=yes
 	fi
 
 	[[ "${PART_WITH_OS[$i]}" = no-os ]] && temp="" || temp=/boot
-
-
 	GRUB_ENV[$i]=no-grubenv
 	if [[ -f "${BLKIDMNT_POINT[$i]}${temp}/grub/grubenv" ]];then
 		GRUB_ENV[$i]=grubenv-ok
-		ENVFILE="$LOGREP/${LISTOFPARTITIONS[$i]}/grubenv"
-		cp "${BLKIDMNT_POINT[$i]}${temp}/grub/grubenv" "$ENVFILE"
-		sed -i "/^#/ d" "$ENVFILE"
-		sed -i "/^\/var\/log\/boot-sav/ d" "$ENVFILE"
-		temp="$(cat "$ENVFILE")"
+		temp="$(cat "${BLKIDMNT_POINT[$i]}${temp}/grub/grubenv" | sed "/^#/ d" | sed '/^$/d' )" #remove empty and commented lines
 		if [[ "$temp" ]];then
 			GRUB_ENV[$i]=grubenv-ng
-			echo "
+			[[ "$DEBBUG" ]] && echo "
 $DASH ${LISTOFPARTITIONS[$i]}${temp}/grub/grubenv :
-$temp
-
-
-"
+$temp"
 		fi
 	fi
 
 
 	PART_GRUBLEGACY[$i]=no-legacy-files
-	if [[ -f "${BLKIDMNT_POINT[$i]}/grub/menu.lst" ]] || [[ -f "${BLKIDMNT_POINT[$i]}/boot/grub/menu.lst" ]];then
-		PART_GRUBLEGACY[$i]=has-legacyfiles
-		echo "${BLKIDMNT_POINT[$i]}${temp}/grub/menu.lst detected"
-	fi
+	for z in "${BLKIDMNT_POINT[$i]}"/{,boot/}grub/menu.lst;do
+		[[ -f "$z" ]] && PART_GRUBLEGACY[$i]=has-legacyfiles && echo "$z detected"
+	done
 
 	WINXPTOREPAIR[$i]=""
 	WINSETOREPAIR[$i]="" #after xp
 	if [[ "${RECOV[$i]}" != recovery-or-hidden ]] && [[ "${WINXP[$i]}" ]];then
-	#&& [[ "$(ls "${BLKIDMNT_POINT[$i]}/" | grep -ix 'Program Files' )" ]] http://paste.ubuntu.com/1032766
+	#&& [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep -ix 'Program Files' )" ]]
 		(( QTY_WINBOOTTOREPAIR += 1 ))
 		WINXPTOREPAIR[$i]=yes
 	elif [[ "${WINMGR[$i]}" = no-bmgr ]] || [[ "${WINBCD[$i]}" = no-b-bcd ]] || [[ "${WINL[$i]}" = no-winload ]] \
@@ -489,299 +577,358 @@ $temp
 		(( QTY_WINBOOTTOREPAIR += 1 ))
 		WINSETOREPAIR[$i]=yes
 	fi
-	
-	#TODO use parted when GPT http://paste.ubuntu.com/1178478
+
+	#Check if partition ends after 100Go
 	FARBIOS[$i]=not-far
-	temp="$(echo "$FDISKL" | grep "${LISTOFPARTITIONS[$i]} " )"
-	if [[ "$temp" ]] && [[ ! "$temp" =~ GPT ]];then #eg: /dev/sda3   *    81922048   163842047    40960000    7  HPFS
-		[[ "$temp" =~ '*' ]] && temp="${temp#* \*}" || temp="${temp#* }" #eg:  81922048   163842047    40960000    7  HPFS
-		a=0
-		for b in $temp; do
-			(( a += 1 ))
-			if [[ "$a" = 2 ]];then
-				e="${BYTES_PER_SECTOR[${DISKNB_PART[$i]}]}"
-				if [[ "$b" =~ [0-9][0-9][0-9] ]];then
-					c="$(( e * b ))"
-					ENDB="$(( c / 1000000000 ))"
-					[[ "$ENDB" ]] && check_farbios
+	part="${LISTOFPARTITIONS[$i]}" #eg /dev/mapper/isw_beaibbhjji_Volume0p1
+	while read temp;do
+		if [[ "$temp" =~ "$part " ]] && [[ ! "$temp" =~ GPT ]];then #eg: /dev/sda3   *    81922048   163842047    40960000    7  HPFS
+			[[ "$temp" =~ '*' ]] && temp="${temp#* \*}" || temp="${temp#* }" #eg:  81922048   163842047    40960000    7  HPFS
+			a=0
+			for b in $temp; do
+				(( a += 1 ))
+				if [[ "$a" = 2 ]];then
+					e="${BYTES_PER_SECTOR[${DISKNB_PART[$i]}]}"
+					if [[ "$b" =~ [0-9][0-9][0-9] ]];then
+						c="$(( e * b ))"
+						ENDB="$(( c / 1000000000 ))"
+						[[ "$ENDB" ]] && check_farbios
+					fi
+					break
 				fi
-				break
+			done
+		fi
+	done < <(echo "$FDISKL")
+	#doublecheck with parted, in case fdisk bugs
+	f=""
+	while read line;do #eg 1:1049kB:21.0GB:21.0GB:ext4::;
+		if [[ "$line" =~ / ]];then
+			[[ "$line" =~ "${DISK_PART[$i]}:" ]] && [[ "$part" =~ "${DISK_PART[$i]}" ]] && f=ok || f=""
+		fi
+		if [[ "$f" ]] && [[ "${line%%:*}" = "${part##*[a-z]}" ]];then
+			ENDB="${line#*B:}" #eg 21.0GB:21.0GB:ext4::;
+			ENDBB="${ENDB%%B:*}" #eg 21.0G
+			if [[ "$ENDBB" =~ G ]] || [[ "$ENDBB" =~ T ]];then
+				ENDBB="${ENDBB%%T*}"; ENDBB="${ENDBB%%G*}" #eg 21.0
+				ENDBB="${ENDBB%%.*}" #eg 21
+				[[ "$ENDB" =~ T ]] && ENDB="$(( ENDBB * 1000 ))" || ENDB="$ENDBB"
+				[[ "$ENDB" ]] && check_farbios
 			fi
-		done
-	else
-		part="${LISTOFPARTITIONS[$i]}" #eg mapper/isw_beaibbhjji_Volume0p1
-		f=""
-		while read line;do #eg 1:1049kB:21.0GB:21.0GB:ext4::;
-			if [[ "$line" =~ /dev/ ]];then
-				[[ "$line" =~ "/dev/${DISK_PART[$i]}:" ]] && f=ok || f=""
-			fi
-			if [[ "$f" ]] && [[ "${line%%:*}" = "${part##*[a-z]}" ]];then
-				ENDB="${line#*B:}" #eg 21.0GB:21.0GB:ext4::;
-				ENDB="${ENDB%%B:*}" #eg 21.0G
-				if [[ "$ENDB" =~ G ]];then
-					ENDB="${ENDB%%G*}" #eg 21.0
-					[[ "$ENDB" =~ '.' ]] && ENDB="${ENDB%%.*}" #eg 21
-					[[ "$ENDB" ]] && check_farbios
-				fi
-			fi
-		done < <(echo "$PARTEDLM")
-	fi
-	
-	if [[ -f "${BLKIDMNT_POINT[$i]}/etc/mdadm/mdadm.conf" ]];then
-		echo "
-$DASH ${LISTOFPARTITIONS[$i]}/etc/mdadm/mdadm.conf :
-$(cat "${BLKIDMNT_POINT[$i]}"/etc/mdadm/mdadm.conf)
+		fi
+	done < <(echo "$PARTEDLM")
 
-
-"
+	if [[ "$DEBBUG" ]];then
+		if [[ -f "${BLKIDMNT_POINT[$i]}/etc/mdadm/mdadm.conf" ]];then
+			[[ "$DEBBUG" ]] && echo "
+$DASH ${LISTOFPARTITIONS[$i]}/etc/mdadm/mdadm.conf $FILTERED:"
+			if [[ ! "$FILTERED" ]];then
+				cat "${BLKIDMNT_POINT[$i]}"/etc/mdadm/mdadm.conf | sed "/^#/ d" | sed '/^$/d'  #remove empty and commented lines
+			else
+				cat "${BLKIDMNT_POINT[$i]}"/etc/mdadm/mdadm.conf
+			fi
+		fi
 		if [[ -f "${BLKIDMNT_POINT[$i]}/proc/mdstat" ]];then
-			echo "
-$DASH ${LISTOFPARTITIONS[$i]}/proc/mdstat :
-$(cat "${BLKIDMNT_POINT[$i]}"/proc/mdstat)
-
-
-"
+			[[ "$DEBBUG" ]] && echo "
+$DASH ${LISTOFPARTITIONS[$i]}/proc/mdstat :"
+			if [[ ! "$FILTERED" ]];then
+				cat "${BLKIDMNT_POINT[$i]}"/proc/mdstat | sed "/^#/ d" | sed '/^$/d'  #remove empty and commented lines
+			else
+				cat "${BLKIDMNT_POINT[$i]}"/proc/mdstat
+			fi
 		fi
 	fi
 
+	ddd="${DISKNB_PART[$i]}"
 	if [[ -d "${BLKIDMNT_POINT[$i]}/casper" ]] || [[ -d "${BLKIDMNT_POINT[$i]}/preseed" ]] \
-	|| [[ -f "${BLKIDMNT_POINT[$i]}/autorun.inf" ]] && [[ "${USBDISK[${DISKNB_PART[$i]}]}" = usb-disk ]];then
-		ddd="${DISKNB_PART[$i]}" #eg http://ubuntuforums.org/showpost.php?p=12264795&postcount=574
-		USBDISK[$ddd]=liveusb		
+	|| [[ -f "${BLKIDMNT_POINT[$i]}/autorun.inf" ]] || [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep '.sys' )" ]] \
+	&& [[ "${USBDISK[${DISKNB_PART[$i]}]}" = usb-disk ]] || [[ -f "${BLKIDMNT_POINT[$i]}/ldlinux.sys" ]];then
+		#eg http://ubuntuforums.org/showpost.php?p=12264795&postcount=574
+		USBDISK[$ddd]=liveusb
 	fi
+	if [[ -d "${BLKIDMNT_POINT[$i]}/casper" ]] || [[ -d "${BLKIDMNT_POINT[$i]}/preseed" ]] \
+	|| [[ -f "${BLKIDMNT_POINT[$i]}/autorun.inf" ]] || [[ "$(ls "${BLKIDMNT_POINT[$i]}/" 2>/dev/null | grep '.sys' )" ]] \
+	|| [[ -f "${BLKIDMNT_POINT[$i]}/ldlinux.sys" ]] && [[ "${MMCDISK[${DISKNB_PART[$i]}]}" = mmc-disk ]];then
+		MMCDISK[$ddd]=livemmc		
+	fi
+done
+efi_scan >/dev/null  #must be after USBDISK[ and MMCDISK[  and GPT_DISK[ fillin
+[[ "$DEBBUG" ]] && paragraph_efi
+[[ "$DEBBUG" ]] && echo "$ECHO_SUMEFI_SECTION"
+}
 
+paragraph_efi(){
+################## EFI SCAN
+#DASHM5=yes
+ECHO_SUMEFI_SECTION=""
+[[ "$DEBBUG" ]] && echo "[debug] ECHO_SUMEFI_SECTION"
+for ((i=1;i<=NBOFPARTITIONS;i++)); do
+	if [[ -d "${BLKIDMNT_POINT[$i]}/efi" ]] || [[ -d "${BLKIDMNT_POINT[$i]}/EFI" ]];then #	&& [[ "${PART_WITH_OS[$i]}" = no-os ]]
+#        if [[ "$DASHM5" ]];then
+#            DASHM5=""
+#            ECHO_SUMEFI_SECTION="EFI files: _____________________________________________________________________
+#"
+#        fi
+		efitmp="$i"
+        md5_efi_partition
+	fi
+#	if [[ "$(echo "$BLKID" | grep "${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="vfat"' )" ]] \
+#	|| [[ "$(echo "$BLKID" | grep "${LISTOFPARTITIONS[$i]}:" | grep 'TYPE="ntfs"' )" ]];then
+#		echo "
+#$DASH hexdump -n512 -C ${LISTOFPARTITIONS[$i]}"
+#		hexdump -n512 -C "${LISTOFPARTITIONS[$i]}"
+#	fi
+done
+}
+
+efi_scan(){
+for ((i=1;i<=NBOFPARTITIONS;i++)); do
+	EFI_TYPE[$i]=isnotESP #init
+	esp_check
+	tmp="${DISKNB_PART[$i]}"
 	WINEFI[$i]=""
 	BOOTEFI[$i]=""
 	MACEFI[$i]=""
-	if [[ -d "${BLKIDMNT_POINT[$i]}/efi" ]] || [[ -d "${BLKIDMNT_POINT[$i]}/EFI" ]] \
-	&& [[ ! -f "${BLKIDMNT_POINT[$i]}/ldlinux.sys" ]];then #exclude liveUSB , eg http://paste.ubuntu.com/1195690
-		for tmpefi in efi EFI;do
-			efidoss="${BLKIDMNT_POINT[$i]}/${tmpefi}/"
-			for z in "${efidoss}"Microsoft/*.efi "${efidoss}"Microsoft/*/*.efi;do
-				if [[ ! "$z" =~ '*' ]] && [[ ! "$(grep bootmgr.efi <<< "$z" )" ]];then #http://ubuntuforums.org/showpost.php?p=12114780&postcount=18
-					echo "Presence of EFI/Microsoft file detected: $z"
-					EFIFILEPRESENCE=yes #eg /EFI/Microsoft/Boot/bootmgfw.efi or bootx64.efi
-					[[ "$z" =~ Microsoft/Boot/bootmgfw.efi ]] \
-					|| [[ "$z" =~ Microsoft/Boot/bootx64.efi ]] && WINEFIFILEPRESENCE=yes #for bkp
-					WINEFI[$i]="${z#*${BLKIDMNT_POINT[$i]}}"
+	if ( [[ -d "${BLKIDMNT_POINT[$i]}/efi" ]] || [[ -d "${BLKIDMNT_POINT[$i]}/EFI" ]] ) \
+	&& ( [[ "${USBDISK[$tmp]}" != liveusb ]] && [[ "${MMCDISK[$tmp]}" != livemmc ]] || [[ "${REALWINONDISC[$tmp]}" = has-win ]] );then #exclude liveUSB/MMC except if Windows on it
+		d="${DISKNB_PART[$i]}"
+		[[ -d "${BLKIDMNT_POINT[$i]}/EFI" ]] && efidoss="${BLKIDMNT_POINT[$i]}/EFI" || efidoss="${BLKIDMNT_POINT[$i]}/efi"
+		efitmp="$i"; md5_efi_partition #puts ECHO_SUMEFI_SECTION in memory, to check below if windows efi files are grub copies
+		for z in $efidoss/Microsoft/{,*/}*.efi;do #eg /EFI/Microsoft/Boot/bootmgfw.efi or bootx64.efi
+			if [[ ! "$z" =~ '*' ]] && [[ ! "$z" =~ bootmgr.efi ]] \
+			&& [[ ! "$z" =~ memtest.efi ]] && [[ ! -f "$z".grb ]];then #http://ubuntuforums.org/showpost.php?p=12114780&postcount=18
+                #ECHO_SUMEFI_SECTION="$ECHO_SUMEFI_SECTION
+				[[ "$DEBBUG" ]] && echo "Presence of EFI/Microsoft file detected: $z"
+				[[ -f "$z" ]] && mdmsft="$(md5sum "$z")" || mdmsft=""
+				EFI_IS_GRUB=""
+				while read line;do
+					[[ "$line" =~ "$mdmsft" ]] && [[ "${line%(is grub)*}" =~ grub ]] && EFI_IS_GRUB=y
+				done < <(echo "$ECHO_SUMEFI_SECTION")
+				if [[ ! "$EFI_IS_GRUB" ]];then
+					EFIFILPRESENT=yes #tab-main
+					( [[ -f "$efidoss"/Microsoft/Boot/bootmgfw.efi ]] && [[ ! -f "$efidoss"/Microsoft/Boot/bootmgfw.efi.grb ]] ) \
+					|| ( [[ -f "$efidoss"/Microsoft/Boot/bootx64.efi ]] && [[ ! -f "$efidoss"/Microsoft/Boot/bootx64.efi.grb ]] ) \
+					&& WINEFIFILEPRESENCE=yes && WINEFI[$i]=has-win-efi #efi-fillin
 				fi
-			done
-
-			for z in "${efidoss}"Boot/*.efi "${efidoss}"Boot/*/*.efi;do
-				if [[ ! "$z" =~ '*' ]];then
-					echo "Presence of EFI/Boot file detected: $z"
-					#EFIFILEPRESENCE=yes
-					[[ "$z" =~ Boot/bootx64.efi ]] && WINEFIFILEPRESENCE=yes #for bkp
-					BOOTEFI[$i]="${z#*${BLKIDMNT_POINT[$i]}}" #eg /efi/Boot/bootx64.efi
+			fi
+		done
+		for z in $efidoss/Boot/{,*/}*.efi;do
+			if [[ ! "$z" =~ '*' ]] && [[ ! "$z" =~ memtest.efi ]];then
+				[[ "$DEBBUG" ]] && echo "Presence of EFI/Boot file detected: $z"
+				EFIFILPRESENT=yes #tab-main
+			fi
+		done
+		for z in $efidoss/{,*/}*/*.scap;do
+			if [[ ! "$z" =~ '*' ]];then
+				[[ "$DEBBUG" ]] && echo "Presence of MacEFI file detected: $z" #File but no OS: http://ubuntuforums.org/showthread.php?t=2077532
+				EFIFILPRESENT=yes #tab-main
+				MACEFIFILEPRESENCE=yes #tab-loca
+				#http://forum.ubuntu-fr.org/viewtopic.php?id=983441
+				#MACEFI[$i]="${z#*${BLKIDMNT_POINT[$i]}}" #eg /efi/APPLE/EXTENSIONS/Firmware.scap
+			fi
+		done
+		for z in $efidoss/{,*/}*/*.bkp $efidoss/{,*/}*/bkp*.efi;do
+			if [[ ! "$z" =~ '*' ]];then
+				BKPFILEPRESENCE=yes
+				if [[ "$z" =~ icros ]];then
+					[[ ! "$1" ]] && [[ "$DEBBUG" ]] && echo "Presence of winbkp file detected: $z"
+					WINBKPFILEPRESENCE=yes
+				else
+					[[ ! "$1" ]] && [[ "$DEBBUG" ]] && echo "Presence of bkp file detected: $z"
 				fi
-			done
-			for z in "${efidoss}"*/*.scap "${efidoss}"*/*/*.scap;do
-				if [[ ! "$z" =~ '*' ]];then
-					echo "Presence of MacEFI file detected: $z"
-					EFIFILEPRESENCE=yes #http://forum.ubuntu-fr.org/viewtopic.php?id=983441
-					MACEFI[$i]="${z#*${BLKIDMNT_POINT[$i]}}" #eg /efi/APPLE/EXTENSIONS/Firmware.scap
-				fi
-			done
-			for z in "${efidoss}"*/*.bkp "${efidoss}"*/*/*.bkp;do
-				if [[ ! "$z" =~ '*' ]];then
-					BKPFILEPRESENCE=yes
-					echo "Presence of .bkp file detected: $z"
-				fi
-			done
+			fi
 		done
 	fi
 done
-QTY_OF_OTHER_LINUX="$QTY_OF_PART_WITH_GRUB"
+
+
+################## Refind  https://forum.ubuntu-fr.org/viewtopic.php?pid=22242095#p22242095
+#for ((i=1;i<=NBOFPARTITIONS;i++)); do
+#    if [[ -d "${BLKIDMNT_POINT[$i]}/boot" ]];then
+#        if [[ -f "${BLKIDMNT_POINT[$i]}/boot/refind_linux.conf" ]];then
+#            echo "
+#$DASH ${LISTOFPARTITIONS[$i]}/boot/refind_linux.conf :
+#$(cat ${BLKIDMNT_POINT[$i]}/boot/refind_linux.conf)"
+#        fi
+#    fi
+#    if [[ -f "${BLKIDMNT_POINT[$i]}/refind_linux.conf" ]];then
+#        echo "
+#$DASH ${LISTOFPARTITIONS[$i]}/refind_linux.conf :
+#$(cat ${BLKIDMNT_POINT[$i]}/refind_linux.conf)"
+#    fi
+#    if [[ -d "${BLKIDMNT_POINT[$i]}/EFI/refind" ]];then
+#        if [[ -f "${BLKIDMNT_POINT[$i]}/EFI/refind/refind.conf" ]];then
+#            echo "
+#$DASH ${LISTOFPARTITIONS[$i]}/EFI/refind/refind.conf (filtered):
+#$(sed -e '/^[ ]*#/d' -e '/^[ ]*;/d' -e '/^$/d' ${BLKIDMNT_POINT[$i]}/EFI/refind/refind.conf)"
+#        fi
+#    fi
+#    if [[ -d "${BLKIDMNT_POINT[$i]}/boot/efi/EFI/refind" ]];then
+#        if [[ -f "${BLKIDMNT_POINT[$i]}/boot/efi/EFI/refind/refind.conf" ]];then
+#            echo "
+#$DASH ${LISTOFPARTITIONS[$i]}/boot/efi/EFI/refind/refind.conf (filtered):
+#$(sed -e '/^[ ]*#/d' -e '/^[ ]*;/d' -e '/^$/d' ${BLKIDMNT_POINT[$i]}/boot/efi/EFI/refind/refind.conf)"
+#        fi
+#    fi
+#done
+}
+
+md5_efi_partition() {
+#Used by mount_separate_boot_if_required & reinstall_grubstageone & debug_echo_part_info & efi_scan
+EFIDIRE="${BLKIDMNT_POINT[$efitmp]}"
+EFIDDD="${LISTOFPARTITIONS[$efitmp]}"
+local a="" tmmmp=""
+mgfw="$EFIDIRE"/efi/Microsoft/Boot/bootmgfw.efi
+mx64="$EFIDIRE"/efi/Microsoft/Boot/bootx64.efi
+[[ -f "$mgfw" ]] && mdmgfw="$(md5sum "$mgfw")" || mdmgfw=""
+[[ -f "$mx64" ]] && mdmx64="$(md5sum "$mx64")" || mdmx64=""
+for xia in efi EFI bkp scap;do #need efi and EFI
+	for x in "$EFIDIRE"/efi/{,*/}*/*.$xia "$EFIDIRE"/EFI/{,*/}*/*.$xia;do
+		if [[ ! "$x" =~ '*' ]] && [[ ! "$x" =~ memtest ]];then
+			[[ "$x" =~ "/EFI/" ]] && tmmmp="${x##*/EFI/}" || tmmmp="${x##*/efi/}"
+			tmmmp="$(echo "$tmmmp" | sed 's/EFI/efi/g' )"
+			if [[ ! "$a" =~ "$tmmmp" ]];then
+				a="$tmmmp $a"
+				mdline="$(md5sum $x)"
+				SAMEASMGFW=""
+				if [[ "$mdline" = "$mdmgfw" ]] && [[ ! "$x" =~ "soft/Boot/bootmgfw.efi" ]] && [[ ! "$x" =~ "oft/Boot/bootx64.efi" ]];then SAMEASMGFW="  (same md5 as Microsoft/Boot/bootmgfw.efi)"
+				elif [[ "$mdline" = "$mdmgfw" ]] && [[ ! "$x" =~ "soft/Boot/bootmgfw.efi" ]] && [[ ! "$x" =~ "oft/Boot/bootx64.efi" ]];then SAMEASMGFW="  (same md5 as Microsoft/Boot/bootx64.efi)"
+				fi
+				[[ -f "$x".grb ]] && FAKEEFI=" (is grub)" || FAKEEFI=""
+				ECHO_SUMEFI_SECTION="$ECHO_SUMEFI_SECTION
+${mdline%% *}   ${EFIDDD#*/dev/}/$tmmmp${FAKEEFI}${SAMEASMGFW}"
+			fi
+		fi
+	done
+done
+}
+
+check_grubdoc_1() {
+lsz="$(ls $z 2>/dev/null | grep grub)"
+for zz in $lsz;do
+	if [[ "$(grep efi <<< "$zz" )" ]] || ( [[ -d "$z$zz" ]] && [[ "$(ls "$z$zz" 2>/dev/null | grep efi )" ]] );then
+		[[ ! "$(grep efi <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="grub-efi ${DOCGRUB[$i]}"
+	elif [[ "$(grep pc <<< "$zz" )" ]] || ( [[ -d "$z$zz" ]] && [[ "$(ls "$z$zz" 2>/dev/null | grep pc )" ]] );then
+		[[ ! "$(grep pc <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="grub-pc ${DOCGRUB[$i]}"
+	elif [[ "$(grep legacy <<< "$zz" )" ]] || ( [[ -d "$z$zz" ]] && [[ "$(ls "$z$zz" 2>/dev/null | grep legacy )" ]] );then
+		[[ ! "$(grep grub1 <<< "${DOCGRUB[$i]}")" ]] && DOCGRUB[$i]="grub1 ${DOCGRUB[$i]}"
+	fi
+done
+}
+
+check_grubdoc_2() {
+lsz="$(ls $z | grep grub)"
+for zz in $lsz;do
+	if [[ ! "$(grep efi <<< "${DOCGRUB[$i]}")" ]] && [[ ! "$(grep pc <<< "${DOCGRUB[$i]}")" ]];then
+		if [[ "$(grep grub2 <<< "$zz" )" ]] || ( [[ -d "$z$zz" ]] && [[ "$(ls "$z$zz" 2>/dev/null | grep grub2 )" ]] );then
+			DOCGRUB[$i]="grub-pc ${DOCGRUB[$i]}"
+		fi
+	fi
+done
 }
 
 check_farbios() {
-d="$(( ENDB / 100 ))" #Limit=100GB
-[[ "$d" != 0 ]] && FARBIOS[$i]=farbios
-echo "[debug] ${LISTOFPARTITIONS[$i]} ends at ${c}GB. ${FARBIOS[$i]}"
-}
-
-############################ CHECK DISK TYPES ##########################
-check_disk_types() {
-local d e f TMPDISK
-GPT_DISK_WITHOUT_BIOS_BOOT=""
-MSDOSPRESENT=""
-BOOTFLAG_NEEDED=""
-for ((d=1;d<=NBOFDISKS;d++)); do #ex: http://paste.ubuntu.com/894616 , http://paste.ubuntu.com/1199042
-	TMPDISK="${LISTOFDISKS[$d]}"
-	if [[ "$(LANGUAGE=C LC_ALL=C fdisk -l "/dev/$TMPDISK" | grep -i GPT )" ]] \
-	&& [[ ! "$(echo "$PARTEDLM" | grep -i msdos | grep "/dev/${TMPDISK}:" )" ]] \
-	&& [[ ! "$(echo "$PARTEDLM" | grep -i loop | grep "/dev/${TMPDISK}:" )" ]] \
-	|| [[ "$(echo "$PARTEDLM" | grep -i gpt | grep "/dev/${TMPDISK}:" )" ]];then
-		GPT_DISK[$d]=GPT
-		BIOS_BOOT[$d]=no-BIOS_boot
-		f=""
-		for e in $PARTEDLM;do #no "" !
-			if [[ "$e" =~ /dev/ ]];then
-				[[ "$e" =~ "/dev/${TMPDISK}:" ]] && f=ok || f=""
-			fi
-			[[ "$f" ]] && [[ "$e" =~ bios_grub ]] && BIOS_BOOT[$d]=BIOS_boot #eg http://paste.ubuntu.com/961886
-		done
-		[[ "${BIOS_BOOT[$d]}" != BIOS_boot ]] && GPT_DISK_WITHOUT_BIOS_BOOT=yes
-	else
-		GPT_DISK[$d]=not-GPT #table may be loop http://paste.ubuntu.com/1159385
-		BIOS_BOOT[$d]=BIOSboot-not-needed
-		MSDOSPRESENT=yes #used by fillin_bootflag_combobox
-	fi
-	[[ "$(ls -l /dev/disk/by-id | grep " usb-" | grep "${LISTOFDISKS[$d]}")" ]] \
-	&& USBDISK[$d]=usb-disk || USBDISK[$d]=not-usb
-
-	BOOTFLAG_NEEDED[$d]=""
-	if [[ "${GPT_DISK[$d]}" != GPT ]];then #&& [[ ! "$EFIFILEPRESENCE" ]]
-		p="$(LANGUAGE=C LC_ALL=C fdisk -l /dev/$TMPDISK | grep /dev | grep '*' )"
-		if [[ ! "$(echo $p  | grep "/dev/${TMPDISK}1 " )" ]] && [[ ! "$(echo $p | grep "/dev/${TMPDISK}2 " )" ]] \
-		&& [[ ! "$(echo $p | grep "/dev/${TMPDISK}3 " )" ]] && [[ ! "$(echo $p | grep "/dev/${TMPDISK}4 " )" ]] \
-		|| [[ "$(echo $p | grep Empty )" ]];then #http://paste.ubuntu.com/1111263
-			BOOTFLAG_NEEDED=setflag #some BIOS need a flag on primary partition
-			BOOTFLAG_NEEDED[$d]=setflag
-		fi
-	fi
-done
-}
-
-
-#################### CHECK EFI PARTITIONS (cf BIS) #####################
-
-check_efi_parts() {
-local d partnb
-NB_BISEFIPART=0
-NB_EFIPARTONGPT=0
-for ((partnb=1;partnb<=NBOFPARTITIONS;partnb++));do
-	BIS_EFI_TYPE[$partnb]=not--efi--part #init
-done
-for ((d=1;d<=NBOFDISKS;d++)); do
-	BISEFI_DISK[$d]=has-no-EFIpart
-	if [[ "${GPT_DISK[$d]}" = GPT ]];then
-		ReadEFIgpt
-	else
-		ReadEFIdos
-	fi
-	
-done
-}
-
-ReadEFIdos() {
-local part drive i VALIDEFI=ok
-#EFI working without GPT: http://paste.ubuntu.com/1012310 , http://forum.ubuntu-fr.org/viewtopic.php?pid=9962371#p9962371
-for ((partnb=1;partnb<=NBOFPARTITIONS;partnb++));do
-	if [[ "${DISK_PART[$partnb]}" = "${LISTOFDISKS[$d]}" ]] && [[ "${PART_WITH_OS[$partnb]}" = no-os ]];then
-		part="${LISTOFPARTITIONS[$partnb]}"
-		drive="${LISTOFDISKS[$d]}"
-		if [[ "$(echo "$FDISKL" | grep "dev/$part " | grep '*' | grep -i fat | grep -vi ntfs )" ]];then
-			this_part_is_efi
-		fi
-	fi
-done
-ReadEFIparted
-}
-
-ReadEFIgpt() {
-ReadEFIparted
-}
-
-ReadEFIparted() {
-echo "[debug]Then my method"
-local partnb line part f EFIPARTNUMERO
-for ((partnb=1;partnb<=NBOFPARTITIONS;partnb++));do #eg http://paste.ubuntu.com/1088378
-	if [[ "${DISK_PART[$partnb]}" = "${LISTOFDISKS[$d]}" ]] && [[ "${PART_WITH_OS[$partnb]}" = no-os ]];then
-		part="${LISTOFPARTITIONS[$partnb]}" #eg mapper/isw_beaibbhjji_Volume0p1
-		f=""
-		while read line;do
-			if [[ "$line" =~ /dev/ ]];then
-				[[ "$line" =~ "/dev/${LISTOFDISKS[$d]}:" ]] && f=ok || f=""
-			fi #eg 11:162GB:162GB:210MB:fat32::boot, hidden;
-			if [[ "$f" ]] && [[ "$(echo "$line" | grep fat | grep boot | grep -v hidden)" ]];then #eg 1:1049kB:21.0GB:21.0GB:ext4::;
-				EFIPARTNUMERO="${line%%:*}" #eg 1
-				VALIDEFI=ok
-				[[ "$EFIPARTNUMERO" = "${part##*[a-z]}" ]] && this_part_is_efi
-			fi
-		done < <(echo "$PARTEDLM")
-	fi
-done
-}
-
-this_part_is_efi() {
-if [[ "${BIS_EFI_TYPE[$partnb]}" = not--efi--part ]];then
-	(( NB_BISEFIPART += 1 ))
-	[[ "${GPT_DISK[$d]}" = GPT ]] && (( NB_EFIPARTONGPT += 1 ))
-fi
-if [[ "$VALIDEFI" ]];then
-	BISEFI_DISK[$d]=has-correctEFI
-	BIS_EFI_TYPE[$partnb]=is-correct-EFI
-else
-	[[ "${BISEFI_DISK[$d]}" != has-correctEFI ]] && BISEFI_DISK[$d]=has-maybe-EFI
-	BIS_EFI_TYPE[$partnb]=is-maybe-EFI
-fi
+d="$(( ENDB / 100 ))"
+[[ "$d" != 0 ]] && FARBIOS[$i]=end-after-100GB
+[[ "$DEBBUG" ]] && echo "[debug] ${LISTOFPARTITIONS[$i]} ends at ${ENDB}GB. ${FARBIOS[$i]}"
 }
 
 
 ################## WARNINGS BEFORE DISPLAYING MAIN MENU ################
 check_options_warning() {
 local FUNCTION
-if [[ "$NB_EFIPARTONGPT" != 0 ]];then
-	FUNCTION=EFI
-	update_translations
-	zenity --info --title="$APPNAME2" --text="${FUNCTION_detected} ${Please_check_options}"
-	echo "${FUNCTION_detected} ${Please_check_options}"
-fi
-if [[ "$QTY_BOOTPART" != 0 ]] && [[ "$LIVESESSION" = live ]];then
+#if [[ "$NB_EFIPARTONGPT" -ge 1 ]] && [[ ! "$MACEFIFILEPRESENCE" ]];then
+#	FUNCTION=EFI
+#	update_translations
+#	zenity --width=400 --info --title="$APPNAME2" --text="$FUNCTION_detected $Please_check_options" 2>/dev/null
+#	echo "$FUNCTION_detected $Please_check_options"
+#fi
+if [[ "$GUI" ]] && [[ "$QTY_BOOTPART" -ge 1 ]] && [[ "$LIVESESSION" = live ]];then
 	FUNCTION=/boot
 	update_translations
-	zenity --info --title="$APPNAME2" --text="${FUNCTION_detected} ${Please_check_options}"
-	echo "${FUNCTION_detected} ${Please_check_options}"
+	zenity --width=400 --info --title="$APPNAME2" --text="$FUNCTION_detected $Please_check_options" 2>/dev/null
+	echo "
+$DASH $FUNCTION_detected $Please_check_options"
 fi
-if [[ "$USE_SEPARATEUSRPART" ]] && [[ "$QTY_SEP_USR_PARTS" != 1 ]] && [[ "$LIVESESSION" = live ]];then
+if [[ "$GUI" ]] && [[ "$QTY_SEP_USR_PARTS" -ge 1 ]] && [[ "$LIVESESSION" = live ]];then
 	FUNCTION=/usr
 	update_translations
-	zenity --info --title="$APPNAME2" --text="${FUNCTION_detected} ${Please_check_options}"
-	echo "${FUNCTION_detected} ${Please_check_options}"
+	zenity --width=400 --info --title="$APPNAME2" --text="$FUNCTION_detected $Please_check_options" 2>/dev/null
+	echo "
+$DASH $FUNCTION_detected $Please_check_options"
 fi
 }
 
 warnings_and_show_mainwindow() {
 WIOULD=would
-debug_echo_important_variables
 end_pulse
-check_options_warning
-echo 'SET@_mainwindow.show()'
+[[ ! "$APPNAME" =~ nf ]] && check_options_warning
+[[ "$GUI" ]] && echo 'SET@_mainwindow.show()'
 }
 
 debug_echo_important_variables() {
-IMPVAR="$MAIN_MENU
-This setting $WIOULD"
-[[ "$APPNAME" != boot-repair ]] && IMPVAR="${IMPVAR} $FORMAT_OS ($FORMAT_TYPE) wubi($WUBI_TO_DELETE), then"
-if [[ "$MBR_ACTION" = restore ]];then
-	IMPVAR="${IMPVAR} restore the [${MBR_TO_RESTORE#* }] MBR in $DISK_TO_RESTORE_MBR, and make it boot on ${LISTOFPARTITIONS[$TARGET_PARTITION_FOR_MBR]}."
-elif [[ "$MBR_ACTION" = nombraction ]];then
-	IMPVAR="${IMPVAR} not act on the MBR."
+[[ "$DEBBUG" ]] && echo "[debug] debug_echo_important_variables"
+if [[ "$WIOULD" =~ ld ]] || [[ "$MAIN_MENU" =~ Recomm ]];then
+	[[ "$APPNAME" =~ os ]] &&  THISSET="The default settings of $CLEANNAME" || THISSET="The default repair of the Boot-Repair utility"
 else
-	[[ "$GRUBPURGE_ACTION" ]] && IMPVAR="${IMPVAR} purge ($PURGREASON) and"
-	IMPVAR="${IMPVAR} reinstall the $GRUBPACKAGE of ${LISTOFPARTITIONS[$REGRUB_PART]}"
-	if [[ "$GRUBPACKAGE" != grub-efi ]];then
-		[[ "$FORCE_GRUB" = place-in-MBR ]] || [[ "$REMOVABLEDISK" ]] && IMPVAR="${IMPVAR} into the MBR of $NOFORCE_DISK"
-		[[ "$FORCE_GRUB" = force-in-PBR ]] && IMPVAR="${IMPVAR} into the PBR of $FORCE_PARTITION"
-		[[ ! "$REMOVABLEDISK" ]] && [[ "$FORCE_GRUB" = place-in-all-MBRs ]] && IMPVAR="${IMPVAR} into the MBRs of all disks (except USB without OS)"
-	fi
-	[[ "$LASTGRUB_ACTION" ]] || [[ "$BLANKEXTRA_ACTION" ]] || [[ "$UNCOMMENT_GFXMODE" ]] || [[ "$ATA" ]] || [[ "$KERNEL_PURGE" ]] \
-	|| [[ "$USE_SEPARATEBOOTPART" ]] || [[ "$USE_SEPARATEUSRPART" ]] || [[ "$ADD_KERNEL_OPTION" ]] || [[ "$GRUBPACKAGE" = grub-efi ]] || [[ "$DISABLEWEBCHECK" ]] || [[ "$CHANGEDEFAULTOS" ]] \
-	&& IMPVAR="${IMPVAR}, using the following options: $LASTGRUB_ACTION $BLANKEXTRA_ACTION $UNCOMMENT_GFXMODE $ATA $KERNEL_PURGE $DISABLEWEBCHECK $CHANGEDEFAULTOS" \
-	|| IMPVAR="${IMPVAR}."
-	[[ "$USE_SEPARATEBOOTPART" ]] && IMPVAR="${IMPVAR} ${LISTOFPARTITIONS[$BOOTPART_TO_USE]}/boot,"
-	[[ "$USE_SEPARATEUSRPART" ]] && IMPVAR="${IMPVAR} ${LISTOFPARTITIONS[$USRPART_TO_USE]}/usr,"
-	[[ "$GRUBPACKAGE" = grub-efi ]] && IMPVAR="${IMPVAR} ${LISTOFPARTITIONS[$EFIPART_TO_USE]}/boot/efi,"
-	[[ "$ADD_KERNEL_OPTION" ]] && IMPVAR="${IMPVAR} $ADD_KERNEL_OPTION ($CHOSEN_KERNEL_OPTION),"
-	[[ "$REMOVABLEDISK" ]] && [[ "$FORCE_GRUB" = place-in-all-MBRs ]] && IMPVAR="${IMPVAR}
-It $WIOULD also fix access to other systems (other MBRs) for the situations when the removable media is disconnected."
-	[[ "$NOTEFIREASON" ]] && IMPVAR="${IMPVAR}
-Grub-efi $WIOULD not be selected by default because: $NOTEFIREASON"
+	THISSET="The settings chosen by the user"
 fi
-[[ "$BOOTFLAG_ACTION" ]] && IMPVAR="${IMPVAR}
-The boot flag $WIOULD be placed on ${LISTOFPARTITIONS[$BOOTFLAG_TO_USE]}."
-[[ "$UNHIDEBOOT_ACTION" ]] || [[ "$FSCK_ACTION" ]] || [[ "$WUBI_ACTION" ]] || [[ "$WINBOOT_ACTION" ]] || [[ "$CREATE_BKP_ACTION" ]] \
-|| [[ "$RESTORE_BKP_ACTION" ]] && IMPVAR="${IMPVAR}
-Additional repair $WIOULD be performed: $UNHIDEBOOT_ACTION $FSCK_ACTION $WUBI_ACTION $WINBOOT_ACTION $CREATE_BKP_ACTION $RESTORE_BKP_ACTION"
+IMPVAR="$THISSET $WIOULD"
+[[ "$APPNAME" =~ os ]] && IMPVAR="$IMPVAR $FORMAT_OS ($FORMAT_TYPE) wubi($WUBI_TO_DELETE), then"
+if [[ "$MBR_ACTION" = restore ]];then
+	IMPVAR="$IMPVAR restore the [${MBR_TO_RESTORE#* }] MBR in $DISK_TO_RESTORE_MBR, and make it boot on ${LISTOFPARTITIONS[$TARGET_PARTITION_FOR_MBR]#*/dev/}."
+elif [[ "$BOOTFLAG_ACTION" ]] || [[ "$UNHIDEBOOT_ACTION" ]] || [[ "$FSCK_ACTION" ]] || [[ "$WUBI_ACTION" ]] || [[ "$WINBOOT_ACTION" ]] \
+|| [[ "$CREATE_BKP_ACTION" ]] || [[ "$RESTORE_BKP_ACTION" ]] && [[ "$MBR_ACTION" = nombraction ]];then
+	IMPVAR="$IMPVAR not act on the MBR."
+elif [[ "$MBR_ACTION" = nombraction ]];then
+	IMPVAR="$IMPVAR not act on the boot."
+else
+	if [[ "$GRUBPURGE_ACTION" ]];then
+		[[ "$PURGREASON" ]] && IMPVAR="$IMPVAR purge ($PURGREASON) and" || IMPVAR="$IMPVAR purge and"
+	fi
+	IMPVAR="$IMPVAR reinstall the $GRUBPACKAGE of
+${LISTOFPARTITIONS[$REGRUB_PART]#*/dev/}"
+	if [[ ! "$GRUBPACKAGE" =~ efi ]];then
+		[[ "$FORCE_GRUB" = place-in-MBR ]] || [[ "$REMOVABLEDISK" ]] && IMPVAR="$IMPVAR into the MBR of ${NOFORCE_DISK#*/dev/}"
+		[[ "$FORCE_GRUB" = force-in-PBR ]] && IMPVAR="$IMPVAR into the PBR of ${FORCE_PARTITION#*/dev/}"
+		#[[ ! "$REMOVABLEDISK" ]] && 
+		[[ "$FORCE_GRUB" = place-in-all-MBRs ]] && IMPVAR="$IMPVAR into the MBRs of all disks without OS (except live-disks and removable disks)"
+	fi
+	[[ "$LASTGRUB_ACTION" ]] || [[ "$BLANKEXTRA_ACTION" ]] || [[ "$UNCOMMENT_GFXMODE" ]] || [[ "$ATA" ]] \
+	|| [[ "$KERNEL_PURGE" ]] || [[ "$USE_SEPARATEBOOTPART" ]] || [[ "$USE_SEPARATEUSRPART" ]] \
+	|| [[ "$ADD_KERNEL_OPTION" ]] || [[ "$GRUBPACKAGE" =~ efi ]] || [[ "$DISABLEWEBCHECK" ]] \
+	&& IMPVAR="$IMPVAR,
+using the following options: $LASTGRUB_ACTION$BLANKEXTRA_ACTION$UNCOMMENT_GFXMODE$KERNEL_PURGE$DISABLEWEBCHECK$ATA" \
+	|| IMPVAR="$IMPVAR."
+	[[ "$USE_SEPARATEBOOTPART" ]] && IMPVAR="$IMPVAR ${LISTOFPARTITIONS[$BOOTPART_TO_USE]#*/dev/}/boot"
+	[[ "$USE_SEPARATEUSRPART" ]] && IMPVAR="$IMPVAR ${LISTOFPARTITIONS[$USRPART_TO_USE]#*/dev/}/usr"
+	[[ "$GRUBPACKAGE" =~ efi ]] && IMPVAR="$IMPVAR ${LISTOFPARTITIONS[$EFIPART_TO_USE]#*/dev/}/boot/efi"
+	[[ "$ADD_KERNEL_OPTION" ]] && IMPVAR="$IMPVAR $ADD_KERNEL_OPTION ($CHOSEN_KERNEL_OPTION)"
+#	[[ "$REMOVABLEDISK" ]] && [[ "$FORCE_GRUB" = place-in-all-MBRs ]] && IMPVAR="$IMPVAR
+#It $WIOULD also fix access to other systems (other MBRs) for the situations
+#when the removable media is disconnected."
+	[[ ! "$GRUBPACKAGE" =~ efi ]] && [[ "$NOTEFIREASON" ]] && IMPVAR="$IMPVAR
+Grub-efi $WIOULD not be selected by default because ${NOTEFIREASON}."
+fi
+[[ "$BOOTFLAG_ACTION" ]] && IMPVAR="$IMPVAR
+The boot flag $WIOULD be placed on ${LISTOFPARTITIONS[$BOOTFLAG_TO_USE]#*/dev/}."
+[[ "$UNHIDEBOOT_ACTION" ]] || [[ "$FSCK_ACTION" ]] || [[ "$WUBI_ACTION" ]] || [[ "$WINBOOT_ACTION" ]] \
+|| [[ "$CREATE_BKP_ACTION" ]] || [[ "$RESTORE_BKP_ACTION" ]] && IMPVAR="$IMPVAR
+Additional repair $WIOULD be performed: $UNHIDEBOOT_ACTION$WINBOOT_ACTION$CREATE_BKP_ACTION$WINEFI_BKP_ACTION$RESTORE_BKP_ACTION$WUBI_ACTION$FSCK_ACTION"
+[[ "$WIOULD" = will ]] && IMPVAR="$IMPVAR
+
+"
+}
+
+################################ PUT THE CURRENT MBRs IN TMP ##################################################
+put_the_current_mbr_in_tmp() {
+local i
+for ((i=1;i<=NBOFDISKS;i++)); do
+	if [[ ! -f "$LOGREP/${LISTOFDISKS[$i]#*/dev/}/current_mbr.img" ]]; then
+		dd if=${LISTOFDISKS[$i]} of=$LOGREP/${LISTOFDISKS[$i]#*/dev/}/current_mbr.img bs=${BYTES_BEFORE_PART[$i]} count=1 2>/dev/null
+	fi
+	if [[ ! -f "$LOGREP/${LISTOFDISKS[$i]#*/dev/}/partition_table.dmp" ]] && [[ "$(type -p sfdisk)" ]]; then
+		sfdisk -d ${LISTOFDISKS[$i]} > $LOGREP/${LISTOFDISKS[$i]#*/dev/}/partition_table.dmp
+		[[ "$DEBBUG" ]] && echo "[debug]$LOGREP/${LISTOFDISKS[$i]#*/dev/}/partition_table.dmp created"
+	fi
+done
 }

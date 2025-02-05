@@ -1,76 +1,43 @@
 Source: boot-repair
 Priority: optional
 Section: admin
-Maintainer: Yann MRN <yannubuntu@gmail.com>
+Maintainer: Yann Mrn <yannubuntu@protonmail.com>
 Uploaders: Alessio Treglia <alessio@debian.org>
 Build-Depends:
- debhelper (>= 7),
- python-all
-Standards-Version: 3.9.3
+ debhelper (>= 11),
+ debhelper-compat (= 13),
+ python3
+Standards-Version: 4.1.1
 X-Python-Version: all
 Homepage: https://launchpad.net/boot-repair
-Vcs-Git: git://github.com/yannmrn/boot-repair.git
+Vcs-Git: https://github.com/yannmrn/boot-repair.git
 Vcs-Browser: https://github.com/yannmrn/boot-repair
+Rules-Requires-Root: no
 
 Package: boot-repair
 Architecture: all
 Depends:
- boot-sav (>= 3.193),
+ boot-sav (>=4ppa2080),
  ${misc:Depends}
 Recommends:
- gawk,
  ntfsprogs | ntfs-3g (>=1:2011.4.12AR.4),
- pastebinit,
- xz-utils | xz-lzma | lzma
 Description: Graphical tool to repair boot problems
  In some situation, you might loose access to one or several of
  your operating systems, because of a buggy update, a bootloader
- problem, a broken filesystem, or after installing a new OS (e.g.
- installing Windows breaks Linux bootloader).
+ problem, or after installing a new OS (e.g. installing
+ Windows breaks Linux bootloader).
  .
  Boot-Repair is a graphical tool that will repair these problems,
  generally by reinstalling GRUB, which then restores access to the
  operating systems you had installed before the issue.
  .
- Boot-Repair also has advanced options for reinstalling GRUB, adding
- kernel options, restoring a generic MBR, or repair a broken filesystem.
- It can also restore the original bootsector if it has been saved
- previously by Clean-Ubiquity.
-
-Package: boot-sav
-Architecture: all
-Depends:
- gettext-base,
- glade2script (>= 3.2) | glade2script-gtk2,
- os-prober,
- parted,
- xdg-utils,
- zenity,
- ${misc:Depends}
-Suggests:
- dmraid,
- lvm2,
- mbr,
- mdadm,
- boot-repair,
- clean-ubiquity,
- os-uninstaller
-Recommends:
- boot-sav-extra,
- gksu,
- lsb-release,
- syslinux-common | syslinux,
- zip
-Description: Librairies for Clean-Ubiquity, OS-uninstaller and Boot-repair
- Common files for 3 tools related to boot:
- Clean-Ubiquity,
- OS-Uninstaller,
- and Boot-Repair
+ Boot-Repair also has advanced options to reinstall GRUB, add
+ kernel options, or restore a generic MBR.
 
 Package: os-uninstaller
 Architecture: all
 Depends:
- boot-sav,
+ boot-sav (>=4ppa2080),
  ${misc:Depends}
 Homepage: https://launchpad.net/os-uninstaller
 Description: Operating System Uninstaller
@@ -83,31 +50,65 @@ Description: Operating System Uninstaller
  bootloader so that you will still access your other remaining systems.
  .
  OS-Uninstaller also has advanced options for OS formatting, and
- bootloader updating. It can also restore the original bootsector if it
- has been saved previously by Clean-Ubiquity.
+ bootloader updating.
 
-Package: clean-ubiquity
+Package: boot-info
+Architecture: all
+Depends:
+ boot-sav (>=4ppa2080),
+ ${misc:Depends}
+Homepage: https://launchpad.net/boot-info
+Description: Diagnose the boot of the computer
+ Boot-Info creates a report about your boot environment.
+ This can help diagnose boot issues, and find the best solution.
+ .
+ The report can be either opened in a text file, or uploaded
+ to a pastebin URL for easier sharing with people who help you.
+
+Package: boot-sav
+Architecture: all
+Depends:
+ efibootmgr,
+ gawk | mawk (>= 1.3.4),
+ gettext-base,
+ gdisk,
+ glade2script (>= 3.2.4~ppa23),
+ lsb-release,
+ mokutil,
+ os-prober,
+ parted,
+ xdg-utils,
+ xz-utils | xz-lzma | lzma,
+ zenity,
+ ${misc:Depends}
+Suggests:
+ boot-info,
+ boot-repair,
+ cryptsetup,
+ dmraid,
+ lvm2,
+ mdadm,
+ os-uninstaller,
+ zfsutils-linux
+Recommends:
+ boot-sav-extra,
+ lshw,
+ pastebinit,
+ syslinux-common | syslinux | mbr,
+ zip
+Description: Librairies for Boot-Info, OS-uninstaller and Boot-repair
+ Common files for 3 tools related to boot:
+ Boot-Info,
+ OS-Uninstaller,
+ and Boot-Repair
+
+Package: boot-sav-extra
 Architecture: all
 Depends:
  boot-sav,
  ${misc:Depends}
-Enhances:
- ubiquity
-Homepage: https://launchpad.net/clean-ubiquity
-Description: Make the Ubiquity installer safer
- Clean-Ubiquity is an addon for Ubiquity. It automatically performs
- a backup of the bootsector that is altered by Ubiquity, and links it
- with the UUID of the new OS.
- .
- This can be extremely useful if the computer is MBR-locked. MBR-lock is
- a system that can be found on some OEM computers with pre-installed
- Windows. It is (was?) put in place by some manufacturers in order to
- fight against Windows piracy, by preventing or making difficult the use
- of a Windows with a different version from the one that was originally
- on the computer. MBR-lock is now forbidden in some countries (e.g.
- France), so it should not be on recent computers. Basically, this
- system uses data written on the motherboard and/or the MBR. If the MBR
- has been altered (eg. by GRUB), this system will detect it and prevent
- Windows (or the entire computer) to boot.
- .
- Clean-Ubiquity needs 2 preseeds integrated during the ISO building.
+Description: Extra librairies for OS-uninstaller and Boot-repair
+ Common files for 3 tools related to boot:
+ Boot-Info,
+ OS-Uninstaller,
+ and Boot-Repair

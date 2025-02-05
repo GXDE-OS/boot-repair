@@ -1,0 +1,45 @@
+.TH BOOT-INFO 8 "May 2020"
+.SH NAME
+Boot-Info \- Diagnose the boot of your computer
+.SH SYNOPSIS
+.B boot-info
+.SH DESCRIPTION
+Creates a report about your boot environment. This can help diagnose boot issues, and find the best solution.
+.br
+The report is created either in text mode, or in a pastebin URL for easier sharing with people who help you.
+.SH OPTIONS FOR TERMINAL MODE
+.TP
+.B -b / --bootinfo
+returns the boot-info report in terminal mode
+.TP
+.B --esp
+returns basic information about ESP on the system
+.TP
+.B --no-filter
+contents of the boot-info report is not filtered
+.TP
+.B -t=XX
+displays latest XX lines of common logs of linux distributions installed on the system
+.TP
+.B -u / --bootinfo-url
+returns pastebin URL leading to the boot-info report 
+.TP
+.B -v / --version
+displays the version
+.SH ADVANCED OPTIONS
+.TP
+.B -y / --force-yes
+assumes answer yes to all questions, to be used in combination with -b or --bootinfo-url
+.TP
+.B --g2s-debug
+displays commands sent to the glade2script GUI engine, can be combined with --debug
+.TP
+.B -d / --debug
+debug mode, can be combined with --g2s-debug
+.TP
+.B --python2
+uses glade2script-python2 GUI engine instead of glade2script-python3
+.SH AUTHORS
+Yann MRN <yannubuntu@protonmail.com>
+.SH SEE ALSO
+.BR https://launchpad.net/boot-info

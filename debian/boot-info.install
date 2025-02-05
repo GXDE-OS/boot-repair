@@ -1,0 +1,8 @@
+etc/apport/crashdb.conf.d/boot-info*
+usr/share/apport/package-hooks/source_boot-info*
+usr/bin/boot-info*
+usr/sbin/boot-info*
+usr/share/boot-sav/boot-info*
+usr/share/applications/boot-info*
+usr/share/doc/boot-info/*
+usr/share/polkit-1/actions/yannubuntu.boot-info*

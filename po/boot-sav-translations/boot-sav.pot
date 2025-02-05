@@ -1,0 +1,1669 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-16 12:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:17
+#: boot-repair/usr/share/boot-sav/gui-actions.sh:758
+#, sh-format
+msgid "Boot-Info"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:18
+#, sh-format
+msgid "Diagnose the boot of the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:19
+#, sh-format
+msgid "Create a report about the boot of the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:20
+#, sh-format
+msgid "Local report (text file)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:21
+#, sh-format
+msgid "Online report (pastebin URL)"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:24
+#, sh-format
+msgid "${APPNAME}, simple tool to diagnose the boot of the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:25
+#, sh-format
+msgid "Easy-to-use (1 click ! )"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:26
+#, sh-format
+msgid "Helpful (helps to get help by email or on your favorite forum)"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/boot-info-translations.sh:28
+#, sh-format
+msgid ""
+"Launch ${APPNAME}, then choose the type of report you prefer (either local "
+"or online)."
+msgstr ""
+
+#. /// TRANSLATORS: this will appear as the application name
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:18
+#, sh-format
+msgid "Boot Repair"
+msgstr ""
+
+#. /// TRANSLATORS: this is the short description of the application
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:20
+#, sh-format
+msgid "Repair the boot of the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:21
+#, sh-format
+msgid "Recommended repair"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:22
+#, sh-format
+msgid "repairs most frequent problems"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:25
+#, sh-format
+msgid "${APPNAME}, simple tool to recover access to your Operating Systems."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:26
+#, sh-format
+msgid "Easy-to-use (repair in 1 click ! )"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:27
+#, sh-format
+msgid ""
+"Helpful (Boot-Info summary to get help by email or on your favorite forum)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:28
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:189
+#, sh-format
+msgid "Whatever the systems installed on your disk,"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:29
+#, sh-format
+msgid "Safe (automatic backups)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:30
+#, sh-format
+msgid "Reliable (300.000 users per year)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:31
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:41
+#, sh-format
+msgid "Can recover access to Windows (XP, Vista, Windows7, Windows8)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:32
+#, sh-format
+msgid ""
+"Can recover access to Debian, Ubuntu, Mint, Fedora, OpenSuse, ArchLinux..."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:33
+#, sh-format
+msgid ""
+"Can recover access to any OS (Windows, MacOS, Linux..) if your PC contains "
+"Debian, Ubuntu, Mint, Fedora, OpenSuse, ArchLinux, or derivative."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:34
+#, sh-format
+msgid "Can repair the boot when you have the \"GRUB Recovery\" error message"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:35
+#, sh-format
+msgid ""
+"Options to reinstall GRUB2/GRUB1 bootloader easily (OS by default, purge, "
+"unhide, kernel options..)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:36
+#, sh-format
+msgid ""
+"and much more ! (UEFI, SecureBoot, RAID, LVM, Wubi, filesystem repair...)"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:38
+#, sh-format
+msgid ""
+"or: boot on a Boot-Repair-Disk. ${APPNAME} will be launched automatically."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:39
+#, sh-format
+msgid ""
+"Launch Boot-Repair, then click the \"Recommended repair\" button. When "
+"repair is finished, write on a paper the URL (paste.ubuntu.com/XXXXX) that "
+"appears on the screen, then reboot and check if you recovered access to your "
+"OSs."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:40
+#, sh-format
+msgid ""
+"If the repair did not succeed, indicate the URL to boot.repair@gmail.com in "
+"order to get help."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:41
+#, sh-format
+msgid ""
+"Warning: the default settings of the Advanced Options are the ones used by "
+"the \"Recommended Repair\". Changing them may worsen your problem. Do not "
+"modify them before asking advice."
+msgstr ""
+
+#. /// Please do not translate ${RESCUEDISK}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:43
+#, sh-format
+msgid "${RESCUEDISK}, the must-have rescue CD !"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:44
+#, sh-format
+msgid "Here is THE Rescue Disk that you should keep close to your computer !"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:46
+#, sh-format
+msgid "runs automatically ${APPNAME} rescue tool at start-up"
+msgstr ""
+
+#. /// Please do not translate ${TOOL1} and ${TOOL2}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:48
+#, sh-format
+msgid "also contains the ${TOOL1} and ${TOOL2} tools."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:49
+#, sh-format
+msgid "repairs recent (UEFI) computers as well as old PCs"
+msgstr ""
+
+#. /// Please do not translate ${RESCUEDISK}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:51
+#, sh-format
+msgid "DOWNLOAD ${RESCUEDISK}"
+msgstr ""
+
+#. /// Please do not translate ${TOOL1} and ${TOOL2}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:53
+#, sh-format
+msgid "Then burn it on a live-USB key via ${TOOL1} or ${TOOL2}."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:54
+#, sh-format
+msgid "do not burn it on CD/DVD if your PC came with Windows8"
+msgstr ""
+
+#. /// Please do not translate ${RESCUEDISK}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:56
+#, sh-format
+msgid "Insert ${RESCUEDISK} and reboot the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:57
+#, sh-format
+msgid "Choose your language"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:58
+#, sh-format
+msgid "Connect internet if possible"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:59
+#, sh-format
+msgid "Click \"Recommended repair\""
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:60
+#, sh-format
+msgid "Reboot the computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:61
+#, sh-format
+msgid "solves the majority of bootsector/GRUB/MBR problems"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:62
+#, sh-format
+msgid "HOW TO GET AND USE THE DISK"
+msgstr ""
+
+#. /// Please do not translate ${THISPARTITION}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:67
+#, sh-format
+msgid "The ${THISPARTITION} partition is nearly full."
+msgstr ""
+
+#. /// Please do not translate ${THISPARTITION}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:69
+#, sh-format
+msgid "The ${THISPARTITION} partition is still full."
+msgstr ""
+
+#. /// Please do not translate ${PARTBS}
+#: boot-repair/usr/share/boot-sav/boot-repair-translations.sh:71
+#, sh-format
+msgid "Please repair the bootsector of the ${PARTBS} partition."
+msgstr ""
+
+#. /// Please do not translate ${RECENTREP}
+#: boot-repair/usr/share/boot-sav-extra/gui-extra.sh:19
+#, sh-format
+msgid ""
+"Warning: this will install necessary packages from ${RECENTREP} repositories."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav-extra/gui-extra.sh:20
+#, sh-format
+msgid "Upgrade GRUB to its most recent version"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-init.sh:22
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:21
+#, sh-format
+msgid "Scanning systems"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-init.sh:23
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:92
+#, sh-format
+msgid "This may require several minutes..."
+msgstr ""
+
+#. /// About (the software)
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:19
+#, sh-format
+msgid "About"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:20
+#, sh-format
+msgid "When rebooting the computer, can you successfully start Windows?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:22
+#, sh-format
+msgid "Operation aborted"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:23
+#, sh-format
+msgid ""
+"It is strongly recommended to always use the latest version of this software."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:24
+#, sh-format
+msgid "Do you want the software be automatically updated now ?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:25
+#, sh-format
+msgid "this will download and install last version from its PPA"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:26
+#, sh-format
+msgid "No change has been performed on your computer."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:27
+#, sh-format
+msgid "No OS has been found on this computer."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:28
+#, sh-format
+msgid "Please use this software in a live-session (live-CD or live-USB)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:29
+#, sh-format
+msgid "Please use this software in a 64bits session."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:30
+#, sh-format
+msgid "Ubuntu installed in Windows (via Wubi)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:31
+#, sh-format
+msgid "No internet connection detected"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:32
+#, sh-format
+msgid "The software could not be updated."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:33
+#, sh-format
+msgid "Please close all your package managers"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:34
+#, sh-format
+msgid "Software Center"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:35
+#, sh-format
+msgid "Update Manager"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:36
+#, sh-format
+msgid "Do you want to continue?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:37
+#, sh-format
+msgid "Are you sure you want to continue anyway?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:38
+#, sh-format
+msgid "Then try again."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:39
+#, sh-format
+msgid "Please connect internet."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:40
+#, sh-format
+msgid "Then close this window."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:41
+#, sh-format
+msgid "Do you want to assemble software raid (MDRaid) arrays?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:42
+#, sh-format
+msgid "Do you want to activate [dmraid] (fakeraid)?"
+msgstr ""
+
+#. /// Make sure the options are ok
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:44
+#, sh-format
+msgid "Please check the options."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:45
+#, sh-format
+msgid ""
+"A new version of this software is available, please check its official "
+"website."
+msgstr ""
+
+#. /// Please do not translate [dmraid] and MDraid
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:47
+#, sh-format
+msgid ""
+"[dmraid] packages may interfere with MDraid. Do you want to remove them?"
+msgstr ""
+
+#. /// Please do not translate Boot-Repair-Disk
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:49
+#, sh-format
+msgid ""
+"Alternatively, you can use Boot-Repair-Disk which contains last version of "
+"this software."
+msgstr ""
+
+#. /// Please do not translate ${BRDISK} nor ${BRDISK2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:53
+#, sh-format
+msgid ""
+"Alternatively, you can use ${BRDISK} or ${BRDISK2} which contain a recent "
+"version of this software."
+msgstr ""
+
+#. /// Please do not translate ${DISK33}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:56
+#, sh-format
+msgid ""
+"Please use ${DISK33} which contains an EFI-compatible version of this "
+"software."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:57
+#, sh-format
+msgid "GRUB reinstallation has been cancelled."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:58
+#, sh-format
+msgid "This will install an obsolete bootloader"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:59
+#, sh-format
+msgid "Please wait few seconds..."
+msgstr ""
+
+#. /// this string must be as short as possible
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:61
+#, sh-format
+msgid "The OS now in use"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:62
+#, sh-format
+msgid "Advanced options"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:63
+#, sh-format
+msgid "Main options"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:64
+#, sh-format
+msgid "GRUB location"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:65
+#, sh-format
+msgid "GRUB options"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:66
+#, sh-format
+msgid "MBR options"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:67
+#, sh-format
+msgid "Other options"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:68
+#, sh-format
+msgid "Reinstall GRUB"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:69
+#, sh-format
+msgid "Restore MBR"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:70
+#, sh-format
+msgid "Unhide boot menu"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:71
+#, sh-format
+msgid "seconds"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:72
+#, sh-format
+msgid "Restore the MBR of:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:73
+#, sh-format
+msgid "Partition booted by the MBR:"
+msgstr ""
+
+#. /// Please make this string as short as possible
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:75
+#, sh-format
+msgid "OS to boot by default:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:76
+#, sh-format
+msgid "Purge and reinstall the GRUB of:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:77
+#, sh-format
+msgid "Purge GRUB before reinstalling it"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:78
+#, sh-format
+msgid "Place GRUB in all disks"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:79
+#, sh-format
+msgid "except USB disks without OS"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:80
+#, sh-format
+msgid "Place GRUB into:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:81
+#, sh-format
+msgid "Force GRUB into:"
+msgstr ""
+
+#. /// 1 bootloader loads a 2nd one
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:83
+#, sh-format
+msgid "for chainloader"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:84
+#, sh-format
+msgid "Reset extra space after MBR"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:85
+#, sh-format
+msgid ""
+"Warning: some applications using DRM or some OEM system tools may not work "
+"afterwards."
+msgstr ""
+
+#. /// Please do not translate GRUB_GFXMODE
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:87
+#, sh-format
+msgid "Uncomment GRUB_GFXMODE"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:88
+#, sh-format
+msgid "ATA disk support"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:89
+#, sh-format
+msgid "Add a kernel option:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:90
+#, sh-format
+msgid "Edit GRUB configuration file"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:91
+#, sh-format
+msgid "Applying changes."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:93
+#, sh-format
+msgid "This will enable this feature."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:94
+#, sh-format
+msgid "Checking updates"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:95
+#, sh-format
+msgid "The updates repository could not be reached."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:96
+#, sh-format
+msgid "Updating"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:97
+#, sh-format
+msgid "Purge kernels then reinstall last kernel"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:98
+#, sh-format
+msgid "Please do not forget to make your BIOS boot on the removable disk!"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:99
+#, sh-format
+msgid "Filesystem repair requires to unmount partitions."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:100
+#, sh-format
+msgid "Please close all your programs."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:101
+#, sh-format
+msgid "Check internet connection"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:102
+#, sh-format
+msgid "Please backup your data before this operation."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:103
+#, sh-format
+msgid "Encrypted partition detected."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:104
+#, sh-format
+msgid ""
+"Please retry after mounting your encrypted partitions so that the tool can "
+"verify their contents."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:105
+#, sh-format
+msgid ""
+"You may want to retry after mounting your encrypted partitions so that the "
+"tool can verify their contents."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:106
+#, sh-format
+msgid "Please reboot and try again from a new live session."
+msgstr ""
+
+#. /// Please indicate an equivalent link in your language
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:108
+#, sh-format
+msgid "https://help.ubuntu.com/community/EncryptedPrivateDirectory"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:109
+#, sh-format
+msgid "It is probably incompatible with your computer."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:110
+#, sh-format
+msgid "Please install an EFI-compatible system."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:111
+#, sh-format
+msgid "You may want to install a 64-bit Linux instead."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:112
+#, sh-format
+msgid ""
+"Warning: continuing without internet would leave your system unbootable."
+msgstr ""
+
+#. /// Please do not translate ${PROGRAM6}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:115
+#, sh-format
+msgid "You may also want to install ${PROGRAM6}."
+msgstr ""
+
+#. /// Please indicate an equivalent link in your language
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:117
+#, sh-format
+msgid "https://help.ubuntu.com/community/BootPartition"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:118
+#, sh-format
+msgid "Use the standard EFI file"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:119
+#, sh-format
+msgid "Backup and rename Windows EFI files"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:120
+#, sh-format
+msgid "Restore EFI backups"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:121
+#, sh-format
+msgid "A broken Wubi has been detected. Please fix it this way:"
+msgstr ""
+
+#. /// Please indicate an equivalent link in your language
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:123
+#, sh-format
+msgid "https://wiki.ubuntu.com/WubiGuide#Cannot_boot_into_Ubuntu"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:124
+#, sh-format
+msgid "Translate"
+msgstr ""
+
+#. /// Please do not translate ${EMAIL1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:126
+#, sh-format
+msgid "Please report this message to ${EMAIL1}"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:127
+#, sh-format
+msgid "Credits"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:128
+#, sh-format
+msgid "Backup partition tables, bootsectors and logs"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:129
+#, sh-format
+msgid "Participate to statistics of use"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:130
+#, sh-format
+msgid "Please choose a folder to put the backup into."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:131
+#, sh-format
+msgid "It is recommended to choose a USB disk."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:132
+#, sh-format
+msgid "start of the disk"
+msgstr ""
+
+#. /// Please do not translate BootInfo
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:134
+#, sh-format
+msgid "Create a BootInfo summary"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:135
+#, sh-format
+msgid "to get help by email or forum"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:136
+#, sh-format
+msgid "requires internet"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:137
+#, sh-format
+msgid "Please note the following URL:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:138
+#, sh-format
+msgid "Please write on a paper the following URL:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:139
+#, sh-format
+msgid "In case you still experience boot problem, indicate this URL to:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:140
+#, sh-format
+msgid "In case you still experience boot problem, indicate its content to:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:141
+#, sh-format
+msgid "or to your favorite support forum."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:142
+#, sh-format
+msgid ""
+"If you are experiencing boot issues, indicate this URL to people who help "
+"you."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:143
+#, sh-format
+msgid ""
+"If you are experiencing boot issues, indicate the content of this file to "
+"people who help you."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:144
+#, sh-format
+msgid "For example on forums or via email."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:145
+#, sh-format
+msgid "Please open a terminal then type (or copy-paste) the following command:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:146
+#, sh-format
+msgid ""
+"Please open a terminal then type (or copy-paste) the following commands:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:147
+#, sh-format
+msgid ""
+"Then when a window similar to the one below appear in your terminal, use Tab "
+"and Enter keys in order to confirm GRUB removal."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:148
+#, sh-format
+msgid ""
+"If a window similar to the one below appears, use Tab and Enter keys in "
+"order to confirm GRUB removal."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:149
+#, sh-format
+msgid "Now please type (or copy-paste) the following command in a terminal:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:150
+#, sh-format
+msgid ""
+"Then when menus similar to the one below appear in your terminal, use Tab, "
+"Space and Enter keys in order to install GRUB in the disk you wish."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:151
+#, sh-format
+msgid ""
+"If a menu similar to the one below appears, use Tab, Space and Enter keys in "
+"order to install GRUB in the disk you wish."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:152
+#, sh-format
+msgid "GRUB is still present."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:153
+#, sh-format
+msgid "GRUB is still absent."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:154
+#, sh-format
+msgid "Please try again."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:155
+#, sh-format
+msgid "Place the boot flag on:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:156
+#, sh-format
+msgid ""
+"You may want to retry after converting Windows dynamic partitioning (SFS "
+"partitions) to a basic disk."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:157
+#, sh-format
+msgid "unformatted filesystem"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:158
+#, sh-format
+msgid "Is there RAID on this computer?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:159
+#, sh-format
+msgid "(if any choice fails, please retry with the other)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:160
+#, sh-format
+msgid "(use it from live-USB, not from DVD)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:161
+#, sh-format
+msgid "Repair file systems"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:162
+#, sh-format
+msgid "Repair Wubi filesystems"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:163
+#, sh-format
+msgid ""
+"The file browser that just opened will let you access your Wubi (Linux "
+"installed into Windows) files."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:164
+#, sh-format
+msgid "Please backup your data now!"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:165
+#, sh-format
+msgid "This will try to repair Wubi filesystem."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:166
+#, sh-format
+msgid "Please do not forget to update your main bootloader!"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:167
+#, sh-format
+msgid "Boot successfully repaired."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:168
+#, sh-format
+msgid "An error occurred during the repair."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:169
+#, sh-format
+msgid "You can now reboot your computer."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:170
+#, sh-format
+msgid "This can prevent to start it"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:171
+#, sh-format
+msgid "e.g. you may get a Power Manager error"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:172
+#, sh-format
+msgid ""
+"Please use the file browser that just opened to delete unused files (or "
+"transfer them to another disk)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:173
+#, sh-format
+msgid "Close this window when you have finished."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:174
+#, sh-format
+msgid "Upload the report to a pastebin"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:175
+#, sh-format
+msgid ""
+"For example you can boot into Windows, then type the following command in an "
+"admin command prompt:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:176
+#, sh-format
+msgid "The current session is in BIOS-compatibility mode."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:177
+#, sh-format
+msgid "Only the MBR of the current OS was fixed."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:178
+#, sh-format
+msgid "To fix other MBRs, please use the tool again from live-session."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:179
+#, sh-format
+msgid ""
+"Please enable BIOS-compatibility/CSM/Legacy mode in your UEFI firmware, and "
+"use this software from a live-CD (or live-USB)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:180
+#, sh-format
+msgid ""
+"Please disable BIOS-compatibility/CSM/Legacy mode in your UEFI firmware, and "
+"use this software from a live-CD (or live-USB) that is compatible with UEFI "
+"booting mode."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:181
+#, sh-format
+msgid ""
+"If your computer reboots directly into Windows, try to change the boot order "
+"in your UEFI firmware."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:182
+#, sh-format
+msgid ""
+"If your UEFI firmware does not allow to change the boot order, change the "
+"default boot entry of the Windows bootloader."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:183
+#, sh-format
+msgid "Please check the Advanced Options."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:184
+#, sh-format
+msgid ""
+"ZFS pools already activated. Please retry from a new live-session, without "
+"activating the pools."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:186
+#, sh-format
+msgid "Free (GPL open-source license)"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:188
+#, sh-format
+msgid "GET ${APPNAME}:"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:191
+#, sh-format
+msgid ""
+"boot on a Debian (or derivatives: Ubuntu, Linux Mint...) disk, either normal "
+"session, or live-CD, or live-USB. Then install ${APPNAME} in it, either via "
+"PPA for Ubuntu/Mint, or DEBs for Debian."
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:193
+#, sh-format
+msgid "USE ${APPNAME}:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:194
+#, sh-format
+msgid "GET HELP:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:195
+#, sh-format
+msgid "by Email (boot.repair@gmail.com)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:196
+#, sh-format
+msgid "HELP THE PROJECT:"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:197
+#, sh-format
+msgid ""
+"Translate, Propose patches, or Donate (Paypal account: boot.repair@gmail.com)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:198
+#, sh-format
+msgid "DISCLAIMER:"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:200
+#, sh-format
+msgid ""
+"${APPNAME} is distributed in the hope that it will be useful, but without "
+"any warranty."
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:202
+#, sh-format
+msgid ""
+"Please be aware that ${APPNAME} writes logs and backups on disks, collects "
+"anonymous statistics about its use, and creates Pastebin (if you select that "
+"option) containing basic system data such as partition labels, UUIDs and "
+"mount points."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:203
+#, sh-format
+msgid "Just disconnect internet if you want these data remain local."
+msgstr ""
+
+#. /// Please do not translate [${OPTION}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:214
+#, sh-format
+msgid "Do you want to activate [${OPTION}]?"
+msgstr ""
+
+#. /// Please do not translate [${PACKAGELIST}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:216
+#, sh-format
+msgid "You may want to retry after installing the [${PACKAGELIST}] packages."
+msgstr ""
+
+#. /// Please do not translate FUNCTION. Neutral and singular.
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:218
+#, sh-format
+msgid "${FUNCTION} detected."
+msgstr ""
+
+#. /// Please do not translate [${PACKAGELIST}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:220
+#, sh-format
+msgid "This will install the [${PACKAGELIST}] packages."
+msgstr ""
+
+#. /// Please do not translate [${PACKAGELIST}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:222
+#, sh-format
+msgid "Do you want to install the [${PACKAGELIST}] packages?"
+msgstr ""
+
+#. /// Please do not translate [${PACKAGELIST}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:224
+#, sh-format
+msgid "Please install the [${PACKAGELIST}] packages."
+msgstr ""
+
+#. /// Please do not translate [${NEEDEDREP}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:226
+#, sh-format
+msgid "This may require to enable [${NEEDEDREP}] repositories."
+msgstr ""
+
+#. /// Please do not translate ${FILE}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:228
+#, sh-format
+msgid "Partition tables, MBRs and logs have been saved into ${FILE}"
+msgstr ""
+
+#. /// Please do not translate [${PACKAGELIST}] nor ${DISTRO}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:230
+#, sh-format
+msgid ""
+"Please enable a repository containing the [${PACKAGELIST}] packages in the "
+"software sources of ${DISTRO}."
+msgstr ""
+
+#. /// Please do not translate ${TYPE3}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:232
+#, sh-format
+msgid "Separate ${TYPE3} partition:"
+msgstr ""
+
+#. /// Please do not translate [${BUG}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:234
+#, sh-format
+msgid "solves the [${BUG}] error"
+msgstr ""
+
+#. /// Please do not translate ${FUNCTION}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:236
+#, sh-format
+msgid "Enabling ${FUNCTION}"
+msgstr ""
+
+#. /// Please do not translate ${MODE1} nor ${MODE2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:238
+#, sh-format
+msgid ""
+"The boot of your PC is in ${MODE1} mode. Please change it to ${MODE2} mode."
+msgstr ""
+
+#. /// Please do not translate ${MODE1} nor ${MODE2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:240
+#, sh-format
+msgid ""
+"The boot of your PC is in ${MODE1} mode. You may want to retry after "
+"changing it to ${MODE2} mode."
+msgstr ""
+
+#. /// Please do not translate ${MODE1} nor ${MODE2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:242
+#, sh-format
+msgid ""
+"The boot of your PC is in ${MODE1} mode, but no ${MODE2} partition was "
+"detected."
+msgstr ""
+
+#. /// Please do not translate ${TYP}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:244
+#, sh-format
+msgid "You may want to retry after creating a ${TYP} partition"
+msgstr ""
+
+#. /// Please do not translate ${TYP}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:246
+#, sh-format
+msgid "Please create a ${TYP} partition"
+msgstr ""
+
+#. /// Please do not translate ${FILENAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:248
+#, sh-format
+msgid "A new file (${FILENAME}) will open in your text viewer."
+msgstr ""
+
+#. /// Please do not translate ${TOOL1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:250
+#, sh-format
+msgid "This can be performed via tools such as ${TOOL1}."
+msgstr ""
+
+#. /// Please do not translate ${TOOL1} nor ${TOOL2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:252
+#, sh-format
+msgid "This can be performed via tools such as ${TOOL1} or ${TOOL2}."
+msgstr ""
+
+#. /// Please do not translate ${DISK1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:254
+#, sh-format
+msgid "Is ${DISK1} a removable disk?"
+msgstr ""
+
+#. /// Please use lower-case letters for "flag" (not "Flag"), and do not translate FLAGTYP
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:256
+#, sh-format
+msgid "${FLAGTYP} flag"
+msgstr ""
+
+#. /// Please do not translate ${DISK1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:258
+#, sh-format
+msgid "Please do not forget to make your BIOS boot on ${DISK1} disk!"
+msgstr ""
+
+#. /// Please do not translate ${FILE1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:260
+#, sh-format
+msgid "Please do not forget to make your UEFI firmware boot on ${FILE1} file!"
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM1} nor ${FILE1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:262
+#, sh-format
+msgid ""
+"Please do not forget to make your UEFI firmware boot on the ${SYSTEM1} entry "
+"(${FILE1} file) !"
+msgstr ""
+
+#. /// Please do not translate [${OPTION}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:264
+#, sh-format
+msgid "You may want to retry after activating the [${OPTION}] option."
+msgstr ""
+
+#. /// Please do not translate [${OPTION}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:266
+#, sh-format
+msgid "You may want to retry after deactivating the [${OPTION}] option."
+msgstr ""
+
+#. /// Please do not translate [${OPTION}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:268
+#, sh-format
+msgid ""
+"Alternatively, you may want to retry after deactivating the [${OPTION}] "
+"option."
+msgstr ""
+
+#. /// Please do not translate [${OPTION1}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:270
+#, sh-format
+msgid "Alternatively, you can retry after activating the [${OPTION1}] option."
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:272
+#, sh-format
+msgid "Repair ${SYSTEM1} boot files"
+msgstr ""
+
+#. /// Please do not translate [${SYSTEM1}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:274
+#, sh-format
+msgid ""
+"The boot files of [${SYSTEM2}] are far from the start of the disk. Your BIOS "
+"may not detect them."
+msgstr ""
+
+#. /// Please do not translate [${OPTION2}] nor [${TOOL3}]
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:276
+#, sh-format
+msgid "Then select this partition via the [${OPTION2}] option of [${TOOL3}]."
+msgstr ""
+
+#. /// Please do not translate ${PARTITION1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:278
+#, sh-format
+msgid ""
+"You have installed on ${PARTITION1} a Linux version which is not EFI-"
+"compatible."
+msgstr ""
+
+#. /// Please do not translate ${PARTITION1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:280
+#, sh-format
+msgid ""
+"Your Linux on ${PARTITION1} is 32-bit, so it may be incompatible with your "
+"64-bit UEFI firmware."
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM1} and ${SYSTEM2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:282
+#, sh-format
+msgid "For example, ${SYSTEM1} and ${SYSTEM2} are EFI-compatible systems."
+msgstr ""
+
+#. /// Please do not translate ${DISK44} nor ${FUNCTION44}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:284
+#, sh-format
+msgid ""
+"Please use ${DISK44} which contains a ${FUNCTION44}-compatible version of "
+"this software."
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM3}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:286
+#, sh-format
+msgid "${SYSTEM3} is now without GRUB."
+msgstr ""
+
+#. /// Please do not translate ${DISK5}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:288
+#, sh-format
+msgid "${DISK5} is a removable disk."
+msgstr ""
+
+#. /// Please do not translate ${OPTION5}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:290
+#, sh-format
+msgid "Please disable ${OPTION5} in the BIOS."
+msgstr ""
+
+#. /// Please do not translate ${DISK5}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:292
+#, sh-format
+msgid ""
+"For example, use a live-USB of ${DISK5}, after making sure your BIOS is set "
+"up to boot USB in EFI mode."
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM6} nor ${COMMANDTOTYP5} nor ${SYSTEM8}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:294
+#, sh-format
+msgid ""
+"Please set your BIOS in Legacy mode in order to start your ${SYSTEM6}, then "
+"type command [${COMMANDTOTYP5}] in order to add the ${SYSTEM8} entry to your "
+"GRUB menu."
+msgstr ""
+
+#. /// Please do not translate ${PACKAGELIST} nor ${APPNAME}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:296
+#, sh-format
+msgid ""
+"If possible, please update the [${PACKAGELIST}] packages, then restart the "
+"${APPNAME} program."
+msgstr ""
+
+#. /// Please do not translate ${PATH1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:298
+#, sh-format
+msgid "Do you want to delete old logs and backups located in ${PATH1} ?"
+msgstr ""
+
+#. /// Please do not translate ${SYSTEM2}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:300
+#, sh-format
+msgid "Please close the ${SYSTEM2} installer, then retry."
+msgstr ""
+
+#. /// Please do not translate ${HIDDENESP}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:302
+#, sh-format
+msgid ""
+"You may want to retry after removing the [hidden] flag from the ${HIDDENESP} "
+"partition."
+msgstr ""
+
+#. /// Please do not translate ${PART1}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:304
+#, sh-format
+msgid ""
+"This will modify the mount point of ${PART1} in order to remove spaces and "
+"special characters."
+msgstr ""
+
+#. /// Please do not translate ${PARTB}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:306
+#, sh-format
+msgid "Do you want to remove the [hidden] flag of ${PARTB} ?"
+msgstr ""
+
+#. /// Please do not translate ${PACK7}
+#: boot-repair/usr/share/boot-sav/gui-translations.sh:308
+#, sh-format
+msgid "Please retry from a live disc containing a recent version of ${PACK7}."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:17
+#, sh-format
+msgid "OS-Uninstaller"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:18
+#, sh-format
+msgid "Remove any operating system from your computer"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:19
+#, sh-format
+msgid "Wubi must be uninstalled from Windows."
+msgstr ""
+
+#. /// Please translate and, if possible, indicate an equivalent link in your language
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:21
+#, sh-format
+msgid ""
+"See https://wiki.ubuntu.com/WubiGuide#Uninstallation for more information."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:22
+#, sh-format
+msgid "Which operating system do you want to uninstall ?"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:23
+#, sh-format
+msgid "We hope you enjoyed it and look forward to read your feedback."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:24
+#, sh-format
+msgid "To finish the removal, please do not forget to update your bootloader!"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:25
+#, sh-format
+msgid ""
+"(the Linux distribution installed from this Windows via Wubi will be lost)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:26
+#, sh-format
+msgid ""
+"This partition will be formatted, please backup your documents before "
+"proceeding."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:27
+#, sh-format
+msgid ""
+"These partitions will be formatted, please backup your documents before "
+"proceeding."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:28
+#, sh-format
+msgid "An error occurred during the removal."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:29
+#, sh-format
+msgid "Then you will need to update your bootloader."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:30
+#, sh-format
+msgid "Apply changes?"
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:33
+#, sh-format
+msgid "${APPNAME}, simple tool to remove an operating system in 1 click."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:34
+#, sh-format
+msgid "Easy-to-use (removal in 1 click)"
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:35
+#, sh-format
+msgid "Can remove any Windows (XP, Vista, Windows7, Windows8)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:36
+#, sh-format
+msgid ""
+"Can remove any Linux (Debian, Ubuntu, Mint, Fedora, OpenSuse, ArchLinux...)."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:37
+#, sh-format
+msgid ""
+"Remark: if you want to uninstall Wubi (Ubuntu installed inside Windows), "
+"please follow this tutorial."
+msgstr ""
+
+#. /// Please do not translate ${APPNAME}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:39
+#, sh-format
+msgid ""
+"Launch ${APPNAME}, choose the system to remove, then click the \"Apply\" "
+"button."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:40
+#, sh-format
+msgid ""
+"When the removal is finished, reboot and check that your system has been "
+"removed."
+msgstr ""
+
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:42
+#, sh-format
+msgid ""
+"Warning: the default settings of the Advanced Options are the recommended "
+"ones. Changing them may break your boot. Do not modify them before asking "
+"advice."
+msgstr ""
+
+#. /// Please do not translate ${DISK} and ${APPNAME}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:44
+#, sh-format
+msgid ""
+"or: boot on ${DISK}. A software (Boot-Repair) will be launched "
+"automatically, close it. Then launch ${APPNAME} from the bottom-left menu."
+msgstr ""
+
+#. /// Please do not translate ${OS_TO_DELETE_NAME}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:49
+#, sh-format
+msgid "Removing ${OS_TO_DELETE_NAME} ..."
+msgstr ""
+
+#. /// Please do not translate ${OS_TO_DELETE_NAME}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:51
+#, sh-format
+msgid "${OS_TO_DELETE_NAME} has been successfully removed."
+msgstr ""
+
+#. /// Please do not translate ${OS_TO_DELETE_PARTITION}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:53
+#, sh-format
+msgid "Format the partition ${OS_TO_DELETE_PARTITION} into :"
+msgstr ""
+
+#. /// Please do not translate ${OS_TO_DELETE_NAME} and ${OS_TO_DELETE_PARTITION}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:55
+#, sh-format
+msgid ""
+"Do you really want to uninstall ${OS_TO_DELETE_NAME} "
+"(${OS_TO_DELETE_PARTITION})?"
+msgstr ""
+
+#. /// Please do not translate ${OS_TO_DELETE_NAME} and ${OS_TO_DELETE_PARTITION}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:57
+#, sh-format
+msgid "This will remove ${OS_TO_DELETE_NAME} (${OS_TO_DELETE_PARTITION})."
+msgstr ""
+
+#. /// Please do not translate ${WUBI_TO_DELETE_PARTITION}
+#: boot-repair/usr/share/boot-sav/os-uninstaller-translations.sh:59
+#, sh-format
+msgid ""
+"(the Linux distribution installed into this Windows via Wubi on "
+"${WUBI_TO_DELETE_PARTITION} will also be erased)"
+msgstr ""

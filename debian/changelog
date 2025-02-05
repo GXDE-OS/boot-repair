@@ -1,5 +1,536 @@
-boot-repair (3.193.7-1) unstable; urgency=low
+boot-repair (4ppa2081) oracular; urgency=low
 
-  * Initial release (Closes: #636977)
+  * clean-up EFI entries (remove dp and data )
 
- -- Yann MRN <yannubuntu@gmail.com>  Thu, 27 Sep 2012 15:14:14 +0200
+ -- Yann MRN <yannubuntu@protonmail.com>  19 Aug 2024 03:00:00 +0200
+
+boot-repair (4ppa2080) oracular; urgency=low
+
+  * improve linux detection to avoid block when Encrypted partition detected. (fix #2077234)
+  * add FSTYPE in Partitions Info #2, and display OS type in OS list
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Jul 2024 00:30:00 +0200
+
+boot-repair (4ppa2079) oracular; urgency=low
+
+  * add --reinstall when reinstalling kernel (solves 2054986)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Jul 2024 00:30:00 +0200
+
+boot-repair (4ppa2078) noble; urgency=low
+
+  * 2024 in about menu
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Jul 2024 22:30:00 +0200
+
+boot-repair (4ppa2077) noble; urgency=low
+
+  * add KDE Neon support for efi detection
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Jul 2024 21:30:00 +0200
+
+boot-repair (4ppa2076) jammy; urgency=low
+
+  * replaced python-all dependancy by python3 to allow building on 24.04
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Jul 2024 20:30:00 +0200
+
+boot-repair (4ppa2075) jammy; urgency=low
+
+  * improved .desktop files (category)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  30 Dec 2023 23:30:00 +0200
+
+boot-repair (4ppa2074) jammy; urgency=low
+
+  * improved .desktop files (category)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Dec 2023 23:30:00 +0200
+
+boot-repair (4ppa2073) jammy; urgency=low
+
+  * improved .desktop files (comments, keywords)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Dec 2023 23:00:00 +0200
+
+boot-repair (4ppa2072) jammy; urgency=low
+
+  * update_soft improvement for Debian
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Dec 2023 01:00:00 +0200
+
+boot-repair (4ppa2071) jammy; urgency=low
+
+  * fix update system
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Dec 2023 19:10:00 +0200
+
+boot-repair (4ppa2070) jammy; urgency=low
+
+  * hide everything after 'password' in logs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Dec 2023 07:10:00 +0200
+
+boot-repair (4ppa2069) jammy; urgency=low
+
+  * exclude loop disks
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Dec 2023 07:00:00 +0200
+
+boot-repair (4ppa2068) jammy; urgency=low
+
+  * dont display sdb as partition
+  * updated SecureBoot detection
+
+ -- Yann MRN <yannubuntu@protonmail.com>  18 Dec 2023 21:00:00 +0200
+
+boot-repair (4ppa2067) jammy; urgency=low
+
+  * when updating app, add ppa if needed
+
+ -- Yann MRN <yannubuntu@protonmail.com>  18 Dec 2023 07:00:00 +0200
+
+boot-repair (4ppa2066) jammy; urgency=low
+
+  * hide 'Reading database' in log
+
+ -- Yann MRN <yannubuntu@protonmail.com>  17 Dec 2023 22:00:00 +0200
+
+boot-repair (4ppa2065) jammy; urgency=low
+
+  * improved Linux Mint efi file detection
+
+ -- Yann MRN <yannubuntu@protonmail.com>  15 Dec 2023 01:00:00 +0200
+
+boot-repair (4ppa2064) jammy; urgency=low
+
+  * improved ESP detection (parted indicates esp and fdisk indicates EFI on non-ESP ext4 partion)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  14 Dec 2023 23:00:00 +0200
+
+boot-repair (4ppa2063) jammy; urgency=low
+
+  * ask feedback when NVRAM locked on non std OS
+
+ -- Yann MRN <yannubuntu@protonmail.com>  14 Dec 2023 22:00:00 +0200
+
+boot-repair (4ppa2062) jammy; urgency=low
+
+  * remove /dev/ from GUI messages
+  * improved NVram locked final message
+
+ -- Yann MRN <yannubuntu@protonmail.com>  12 Dec 2023 22:00:00 +0200
+
+boot-repair (4ppa2061) jammy; urgency=low
+
+  * work with /dev for compatibility with ZFS
+  * improved grub.cfg filtering
+
+ -- Yann MRN <yannubuntu@protonmail.com>  11 Dec 2023 23:00:00 +0200
+
+boot-repair (4ppa2060) jammy; urgency=low
+
+  * update RECENTUB=noble in gui-extra
+  * fix Mount options
+  * filters 25_bli and 41_snapshots-btrfs
+  * additional GUIDs in bis
+
+ -- Yann MRN <yannubuntu@protonmail.com>  11 Dec 2023 06:00:00 +0200
+
+boot-repair (4ppa2059) jammy; urgency=low
+
+  * final advice when partition containing /boot (MBR boot only) or ESP ends after 100GB
+
+ -- Yann MRN <yannubuntu@protonmail.com>  10 Dec 2023 01:00:00 +0200
+
+boot-repair (4ppa2058) jammy; urgency=low
+
+  * fix https://forum.ubuntu-fr.org/viewtopic.php?pid=22727373#p22727373 (SecureBoot detection via /sys/firmware/efi/efivars)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  9 Dec 2023 12:00:00 +0200
+
+boot-repair (4ppa2057) jammy; urgency=low
+
+  * improved ZFS management (beta, to be tested)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  9 Dec 2023 01:00:00 +0200
+
+boot-repair (4ppa209) jammy; urgency=low
+
+  * detects copies of grub in windows efi via md5
+  * WindowsGPTwithoutESP detected You may want to retry after repairing ESP via command in Windows: bcdboot Letter:\Windows /l fr-fr /s x: /f ALL
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Dec 2023 22:00:00 +0200
+
+boot-repair (4ppa208) jammy; urgency=low
+
+  * add option to create microsoft efi structure and put grub in it.
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Dec 2023 22:00:00 +0200
+
+boot-repair (4ppa207) jammy; urgency=low
+
+  * update translations
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Dec 2023 20:00:00 +0200
+
+boot-repair (4ppa206) jammy; urgency=low
+
+  * upd translations
+
+ -- Yann MRN <yannubuntu@protonmail.com>  9 Feb 2023 20:00:00 +0200
+
+boot-repair (4ppa205) jammy; urgency=low
+
+  * fix bug #2002570 (was preventing the removal of hidden flag. So rare usage and it didn't break anything.)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  9 Feb 2023 19:00:00 +0200
+
+boot-repair (4ppa203) jammy; urgency=low
+
+  * correctly hide snap from mount info
+  * hide 35_fwupd
+  * improve default grub entry
+
+ -- Yann MRN <yannubuntu@protonmail.com>  30 Nov 2022 21:00:00 +0200
+
+boot-repair (4ppa202) jammy; urgency=low
+
+  * manage mokutil new sentence: SecureBoot enabled
+
+ -- Yann MRN <yannubuntu@protonmail.com>  29 Nov 2022 22:55:00 +0200
+
+boot-repair (4ppa201) jammy; urgency=low
+
+  * hide /sda2[/usr/share/hunspell] -like from mount points
+  * fix CURRENTSESSIONPARTITION
+  * fix lib64 condition
+  * bis stop displaying hexdump of MBRs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  29 Nov 2022 20:55:00 +0200
+
+boot-repair (4ppa200) jammy; urgency=low
+
+  * hide the redundant Advices in log
+  * add ${CHROOTCMD}modprobe efivars
+
+ -- Yann MRN <yannubuntu@protonmail.com>  6 Mar 2022 23:55:00 +0200
+
+boot-repair (4ppa199) jammy; urgency=low
+
+  * show only once the errors on mount -r
+  * display free space only when > 10MiB
+
+ -- Yann MRN <yannubuntu@protonmail.com>  28 Feb 2022 23:55:00 +0200
+
+boot-repair (4ppa198) jammy; urgency=low
+
+  * fix secure boot display
+
+ -- Yann MRN <yannubuntu@protonmail.com>  27 Feb 2022 23:55:00 +0200
+
+boot-repair (4ppa197) jammy; urgency=low
+
+  * strenghten secure boot detection via mokutil
+  * added BIOS version
+
+ -- Yann MRN <yannubuntu@protonmail.com>  27 Feb 2022 22:55:00 +0200
+
+boot-repair (4ppa196) jammy; urgency=low
+
+  * block repair if zfsutils older than version 2.x
+  * fix list of OS when / on zfs
+  * fix luks partition detection/message
+
+ -- Yann MRN <yannubuntu@protonmail.com>  24 Feb 2022 22:55:00 +0200
+
+boot-repair (4ppa195) jammy; urgency=low
+
+  * just reload
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Feb 2022 22:55:00 +0200
+
+boot-repair (4ppa194) jammy; urgency=low
+
+  * display CHROOTCMD before grub-install in logs
+  * rm /boot/efi/EFI/ubuntu when error: cannot open /boot/efi/EFI/ubuntu/grubx64.efi: Not a directory.
+  * $GRUB_is_still_present $Please_try_again (purge grub* packages from ${BLKIDMNT_POINT[$USRPART]})
+
+ -- Yann MRN <yannubuntu@protonmail.com>  21 Feb 2022 22:55:00 +0200
+
+boot-repair (4ppa193) jammy; urgency=low
+
+  * hide the " Package linux-xxx is not installed, so not removed " warnings from the logs
+  * activate zfs pools in installed session when / is not zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  16 Feb 2022 6:55:00 +0200
+
+boot-repair (4ppa192) jammy; urgency=low
+
+  * fix random bug due to double reinstall_grubstageone()  line
+
+ -- Yann MRN <yannubuntu@protonmail.com>  11 Feb 2022 18:55:00 +0200
+
+boot-repair (4ppa191) jammy; urgency=low
+
+  * fix install of cryptsetup and luks blockers
+
+ -- Yann MRN <yannubuntu@protonmail.com>  11 Feb 2022 00:55:00 +0200
+
+boot-repair (4ppa190) jammy; urgency=low
+
+  * chroot install efibootmgr wen absent during grub-efi purge
+
+ -- Yann MRN <yannubuntu@protonmail.com>  10 Feb 2022 23:55:00 +0200
+
+boot-repair (4ppa189) jammy; urgency=low
+
+  * don't propose to enable raid on pure lmv (when mapper/vg.. )
+  * propose to decrypt when no Linux detected
+
+ -- Yann MRN <yannubuntu@protonmail.com>  10 Feb 2022 23:33:00 +0200
+
+boot-repair (4ppa188) jammy; urgency=low
+
+  * force grub purge when grub.d missing
+  * add sid to the list of EFIGRUBFILE detection
+
+ -- Yann MRN <yannubuntu@protonmail.com>  8 Feb 2022 22:33:00 +0200
+
+boot-repair (4ppa187) jammy; urgency=low
+
+  * propose to remove hidden flag from default esp
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Feb 2022 22:35:00 +0200
+
+boot-repair (4ppa186) jammy; urgency=low
+
+  * fix bug introduced in ppa185
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Feb 2022 20:35:00 +0200
+
+boot-repair (4ppa185) jammy; urgency=low
+
+  * block and ask to use recent live disc when error on zfs import
+  * block and ask to use BRD when efibootmgr not installed and grub-efi repair
+
+ -- Yann MRN <yannubuntu@protonmail.com>  7 Feb 2022 18:35:00 +0200
+
+boot-repair (4ppa184) jammy; urgency=low
+
+  * add -f to final zfs export
+  * add -lf to unchroot umount (for all: zfs and others)
+
+ -- Yann MRN <yannubuntu@protonmail.com>  3 Feb 2022 23:35:00 +0200
+
+boot-repair (4ppa183) jammy; urgency=low
+
+  * flag bpool as 'is--zfs-boot' instead of 'is---sepboot' to avoid popup and risk of user mistake
+  * fix the add of GRUB_CMDLINE_LINUX=root=ZFS= in default/grub update for zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  3 Feb 2022 23:35:00 +0200
+
+boot-repair (4ppa182) jammy; urgency=low
+
+  * removed 'update-initramfs -c -k all' in fix_etc_default_grub_for_zfs()
+  * ask install pastebinit only when upload
+
+ -- Yann MRN <yannubuntu@protonmail.com>  3 Feb 2022 18:35:00 +0200
+
+boot-repair (4ppa181) jammy; urgency=low
+
+  * don't create zfs/boot/grub nor /zfs/boot/efi to avoid 'not empty folder' issue when mounting rpool
+  * export -f -a at finish in live session
+  * don't add useless fstab boot/efi line when zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  2 Feb 2022 18:35:00 +0200
+
+boot-repair (4ppa180) jammy; urgency=low
+
+  * fix mnt point of rpool
+
+ -- Yann MRN <yannubuntu@protonmail.com>  2 Feb 2022 13:35:00 +0200
+
+boot-repair (4ppa179) jammy; urgency=low
+
+  * check if zpool list not empty after activation
+  * fix check_if_live_session() by removing inacurrate space
+  * Differentiate bppol and rpool
+
+ -- Yann MRN <yannubuntu@protonmail.com>  30 Jan 2022 13:15:00 +0200
+
+boot-repair (4ppa178) jammy; urgency=low
+
+  * fixed 'bootflag_update : cannot find command' bug
+  * add display of fstab for zfs partitions
+
+ -- Yann MRN <yannubuntu@protonmail.com>  29 Jan 2022 13:15:00 +0200
+
+boot-repair (4ppa177) jammy; urgency=low
+
+  * fix mount zfs + added modprobe zfs / efivars
+
+ -- Yann MRN <yannubuntu@protonmail.com>  29 Jan 2022 12:15:00 +0200
+
+boot-repair (4ppa176) jammy; urgency=low
+
+  * zfs improvements thx to MAF & geole
+
+ -- Yann MRN <yannubuntu@protonmail.com>  29 Jan 2022 00:15:00 +0200
+
+boot-repair (4ppa175) jammy; urgency=low
+
+  * remove '--no-uefi-secure-boot' to avoid unrecognized option error
+  * check efi files on liveUSB/MMC containing windows
+  * purge to remove grub-efi when install grub-pc from EFI session
+  * Workaround GRUB’s missing zpool-features support
+
+ -- Yann MRN <yannubuntu@protonmail.com>  28 Jan 2022 22:55:00 +0200
+
+boot-repair (4ppa174) jammy; urgency=low
+
+  * fix wrong parted scan when partition has fallback disk
+
+ -- Yann MRN <yannubuntu@protonmail.com>  25 Jan 2022 22:06:14 +0200
+
+boot-repair (4ppa173) jammy; urgency=low
+
+  * fixed missing parenthesis l305 bs-cmd-terminal
+  * -u alternative to --boot-info-url
+
+ -- Yann MRN <yannubuntu@protonmail.com>  24 Jan 2022 18:16:14 +0200
+
+boot-repair (4ppa172) jammy; urgency=low
+
+  * if installed session, do not activate zfs, but add / source as a partition
+  * improved zfs activation based on geole and MAF feedback
+
+ -- Yann MRN <yannubuntu@protonmail.com>  24 Jan 2022 18:16:14 +0200
+
+boot-repair (4ppa171) jammy; urgency=low
+
+  * prevent unmount /mnt/boot-sav/zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  23 Jan 2022 00:16:14 +0200
+
+boot-repair (4ppa170) jammy; urgency=low
+
+  * zfs: improved enabling, mount all zfs_members on /mnt/boot-sav/zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Jan 2022 23:16:14 +0200
+
+boot-repair (4ppa169) jammy; urgency=low
+
+  * improved partition detection for >10 partitions systems
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Jan 2022 01:16:14 +0200
+
+boot-repair (4ppa168) jammy; urgency=low
+
+  * added a translatable string
+  * remove useless 'Grub-efi WIOULD not be selected by default because' when user forced grub-pc
+  * fixed 'gui-translations.sh: ligne 303: This_will_mount_=This' error
+
+ -- Yann MRN <yannubuntu@protonmail.com>  22 Jan 2022 00:16:14 +0200
+
+boot-repair (4ppa167) jammy; urgency=low
+
+  * refined "Warning: NVram was not modified." condition for Mint
+  * solved GUI delay when clicking Advanced options
+  * added fat option to os-uninstaller
+  * removed advanced option to skip report creation
+
+ -- Yann MRN <yannubuntu@protonmail.com>  20 Jan 2022 23:16:14 +0200
+
+boot-repair (4ppa166) jammy; urgency=low
+
+  * --no-nvram https://forum.ubuntu-fr.org/viewtopic.php?pid=22522049#p22522049
+
+ -- Yann MRN <yannubuntu@protonmail.com>  20 Jan 2022 01:16:14 +0200
+
+boot-repair (4ppa165) jammy; urgency=low
+
+  * remove useless Warning grub upgrade from log (keep it as popup when users selects the option)
+  * when zfs, add partitions from mount
+  * filter 'Warning: The driver descriptor says' lines from log (unless --no-filter)
+  * improved EFi section of boot-info
+  * removed options to install grub on all MBRs and to force in PBR
+  * improved grub*.efi detection
+
+ -- Yann MRN <yannubuntu@protonmail.com>  19 Jan 2022 01:16:14 +0200
+
+boot-repair (4ppa164) jammy; urgency=low
+
+  * improve ESP detection on vda
+  * made df / compatible with zfs
+  * display blkid when lvm/raid/zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  14 Jan 2022 01:16:14 +0200
+
+boot-repair (4ppa163) jammy; urgency=low
+
+  * in boot-info hide identic consecutive lines of grub.cfg
+  * hide 'Warning: Unable to open '
+  * no more purge when both grub-pc and grub-efi, nor to unsign
+  * improved filters when zfs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  14 Jan 2022 00:16:14 +0200
+
+boot-repair (4ppa162) jammy; urgency=low
+
+  * replaced gdisk -l by sgdisk -p
+  * cleaned pastebinaction
+
+ -- Yann MRN <yannubuntu@protonmail.com>  13 Jan 2022 13:16:14 +0200
+
+boot-repair (4ppa161) jammy; urgency=low
+
+  * removed gdisk execution after free space section
+  * hide 'Unable to open /dev/sr0 read-write' from boot-info
+
+ -- Yann MRN <yannubuntu@protonmail.com>  13 Jan 2022 12:16:14 +0200
+
+boot-repair (4ppa160) jammy; urgency=low
+
+  * stop considering [/usr/sbin/grub-probe: error: failed to get canonical path of `/boot/grub/fonts/UbuntuMono16.pf2'] as 'Error detected in grub_mkconfig'
+  * display md5 of efi files in EFI section
+  * in bis, updated Boot sector types and ignore memtest
+
+ -- Yann MRN <yannubuntu@protonmail.com>  12 Jan 2022 19:16:14 +0200
+
+boot-repair (4ppa159) jammy; urgency=low
+
+  * removed gdisk section to avoid blocking boot-info when gdisk waits answer from user
+
+ -- Yann MRN <yannubuntu@protonmail.com>  12 Jan 2022 18:16:14 +0200
+
+boot-repair (4ppa158) jammy; urgency=low
+
+  * fixed error: https://forum.ubuntu-fr.org/viewtopic.php?pid=22523320#p22523320
+  * skip update when debug
+
+ -- Yann MRN <yannubuntu@protonmail.com>  11 Jan 2022 22:16:14 +0200
+
+boot-repair (4ppa157) jammy; urgency=low
+
+  * fixed paste2bin to sprunge.us, hide 'error: cannot find a GRUB drive' false-positives, updates efi section after grub-efi install
+
+ -- Yann MRN <yannubuntu@protonmail.com>  6 Jan 2022 17:16:14 +0200
+
+boot-repair (4ppa156) jammy; urgency=low
+
+  * improved purge commands - extended to other distribs
+
+ -- Yann MRN <yannubuntu@protonmail.com>  6 Jan 2022 13:15:14 +0200
+
+boot-repair (4ppa153) jammy; urgency=low
+
+  * hide bs-cmd_terminal.sh: line 177: warning: command substitution: ignored null byte in input
+
+ -- Yann MRN <yannubuntu@protonmail.com>  4 Jan 2022 13:15:14 +0200
+
+boot-repair (4ppa152) jammy; urgency=low
+
+  * fixed gui-actions-grub.sh: line 664: syntax error near unexpected token `}'
+
+ -- Yann MRN <yannubuntu@protonmail.com>  Tue, 4 Jan 2022 13:14:14 +0200

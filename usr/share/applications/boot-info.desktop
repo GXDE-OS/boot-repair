@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Boot-Info
+GenericName=Diagnose the boot of your computer
+GenericName[fr]=Diagnostic du démarrage de l'ordinateur
+Comment=Diagnose the boot of your computer
+Comment[fr]=Diagnostic du démarrage de l'ordinateur
+Exec=boot-info-pkexec
+Keywords=grub;mbr;efi;uefi;bios;summary;report;log;boot;info;diag;
+Icon=/usr/share/boot-sav/x-boot-info.png
+Terminal=false
+Categories=System;
+StartupNotify=true

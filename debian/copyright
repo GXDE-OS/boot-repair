@@ -1,14 +1,14 @@
-Format: http://anonscm.debian.org/viewvc/dep/web/deps/dep5.mdwn?revision=240
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: boot-repair
 Source: https://launchpad.net/boot-repair
-Upstream-Contact: Yann Mrn <yannubuntu@gmail.com>
+Upstream-Contact: Yann Mrn <yannubuntu@protonmail.com>
 
 Files: *
-Copyright: 2010-2012 Yann Mrn <yannubuntu@gmail.com>
+Copyright: 2010-2022 Yann Mrn <yannubuntu@protonmail.com>
 License: GPL-3.0+
 
-Files: usr/share/boot-sav/bis*
-Copyright: 2011 Gert Hulselmans <hulselmansgert@gmail.com>
+Files: usr/share/boot-sav/b-i-s.sh
+Copyright: see file
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to     

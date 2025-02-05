@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright 2012 Yann MRN
+# Copyright 2014 Yann MRN
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3, as published
@@ -14,25 +14,52 @@
 # with this program. If not, see <http://www.gnu.org/licenses/>.
 
 first_translations_diff() {
-Successfully_processed=$(eval_gettext $'Boot successfully repaired.')
-An_error_occurred_during=$(eval_gettext $'An error occurred during the repair.')
-You_can_now_reboot=$(eval_gettext $'You can now reboot your computer.')
-This_can_prevent_to_start_it=$(eval_gettext $'This can prevent to start it')
-Power_manager_error=$(eval_gettext $'e.g. you may get a Power Manager error')
-Please_use_the_file_browser=$(eval_gettext $'Please use the file browser that just opened to delete unused files (or transfer them to another disk).')
-Close_this_window_when_finished=$(eval_gettext $'Close this window when you have finished.')
 #/// TRANSLATORS: this will appear as the application name
 APPNAME2=$(eval_gettext $'Boot Repair')  #for the .desktop & more
 #/// TRANSLATORS: this is the short description of the application
 Repair_the_boot_of_the_computer=$(eval_gettext $'Repair the boot of the computer')  #for the .desktop
 Recommended_repair=$(eval_gettext $'Recommended repair')
 repairs_most_frequent_problems=$(eval_gettext $'repairs most frequent problems')
-Repair_file_systems=$(eval_gettext $'Repair file systems')
-Repair_Wubi=$(eval_gettext $'Repair Wubi filesystems')
-The_browser_will_access_wubi=$(eval_gettext $'The file browser that just opened will let you access your Wubi (Linux installed into Windows) files.')
-Please_backup_data_now=$(eval_gettext $'Please backup your data now!')
-This_will_try_repair_wubi=$(eval_gettext $'This will try to repair Wubi filesystem.')
-Please_update_main_bootloader=$(eval_gettext $'Please do not forget to update your main bootloader!')
+#SF
+#/// Please do not translate ${APPNAME}
+sf=$(eval_gettext $'${APPNAME}, simple tool to recover access to your Operating Systems.')
+sf=$(eval_gettext $'Easy-to-use (repair in 1 click ! )')
+sf=$(eval_gettext $'Helpful (Boot-Info summary to get help by email or on your favorite forum)')
+sf=$(eval_gettext $'Whatever the systems installed on your disk,')
+sf=$(eval_gettext $'Safe (automatic backups)')
+sf=$(eval_gettext $'Reliable (300.000 users per year)')
+sf=$(eval_gettext $'Can recover access to Windows (XP, Vista, Windows7, Windows8).')
+sf=$(eval_gettext $'Can recover access to Debian, Ubuntu, Mint, Fedora, OpenSuse, ArchLinux...')
+sf=$(eval_gettext $'Can recover access to any OS (Windows, MacOS, Linux..) if your PC contains Debian, Ubuntu, Mint, Fedora, OpenSuse, ArchLinux, or derivative.')
+sf=$(eval_gettext $'Can repair the boot when you have the "GRUB Recovery" error message')
+sf=$(eval_gettext $'Options to reinstall GRUB2/GRUB1 bootloader easily (OS by default, purge, unhide, kernel options..)')
+sf=$(eval_gettext $'and much more ! (UEFI, SecureBoot, RAID, LVM, Wubi, filesystem repair...)')
+#/// Please do not translate ${APPNAME}
+sf=$(eval_gettext $'or: boot on a Boot-Repair-Disk. ${APPNAME} will be launched automatically.')
+sf=$(eval_gettext $'Launch Boot-Repair, then click the "Recommended repair" button. When repair is finished, write on a paper the URL (paste.ubuntu.com/XXXXX) that appears on the screen, then reboot and check if you recovered access to your OSs.')
+sf=$(eval_gettext $'If the repair did not succeed, indicate the URL to boot.repair@gmail.com in order to get help.')
+sf=$(eval_gettext $'Warning: the default settings of the Advanced Options are the ones used by the "Recommended Repair". Changing them may worsen your problem. Do not modify them before asking advice.')
+#/// Please do not translate ${RESCUEDISK}
+sf=$(eval_gettext $'${RESCUEDISK}, the 'must-have' rescue CD !')
+sf=$(eval_gettext $'Here is THE Rescue Disk that you should keep close to your computer !')
+#/// Please do not translate ${APPNAME}
+sf=$(eval_gettext $'runs automatically ${APPNAME} rescue tool at start-up')
+#/// Please do not translate ${TOOL1} and ${TOOL2}
+sf=$(eval_gettext $'also contains the ${TOOL1} and ${TOOL2} tools.')
+sf=$(eval_gettext $'repairs recent (UEFI) computers as well as old PCs')
+#/// Please do not translate ${RESCUEDISK}
+sf=$(eval_gettext $'DOWNLOAD ${RESCUEDISK}')
+#/// Please do not translate ${TOOL1} and ${TOOL2}
+sf=$(eval_gettext $'Then burn it on a live-USB key via ${TOOL1} or ${TOOL2}.')
+sf=$(eval_gettext $'do not burn it on CD/DVD if your PC came with Windows8')
+#/// Please do not translate ${RESCUEDISK}
+sf=$(eval_gettext $'Insert ${RESCUEDISK} and reboot the computer')
+sf=$(eval_gettext $'Choose your language')
+sf=$(eval_gettext $'Connect internet if possible')
+sf=$(eval_gettext $'Click "Recommended repair"')
+sf=$(eval_gettext $'Reboot the computer')
+sf=$(eval_gettext $'solves the majority of bootsector/GRUB/MBR problems')
+sf=$(eval_gettext $'HOW TO GET AND USE THE DISK')
 }
 
 update_translations_diff() {

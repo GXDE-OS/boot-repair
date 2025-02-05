@@ -1,4 +1,4 @@
-.TH BOOT-REPAIR 8 "January 2012"
+.TH BOOT-REPAIR 8 "April 2020"
 .SH NAME
 Boot-Repair \- Graphical tool to repair boot problems
 .SH SYNOPSIS
@@ -6,21 +6,48 @@ Boot-Repair \- Graphical tool to repair boot problems
 .SH DESCRIPTION
 In some situation, you might loose access to one or several of
 your operating systems, because of a buggy update, a bootloader
-problem, a broken filesystem, or after installing a new OS (e.g.
-installing Windows breaks Linux bootloader).
+problem, or after installing a new OS (e.g. installing
+Windows breaks Linux bootloader).
 .br
 Boot-Repair is a graphical tool that will repair these problems,
 generally by reinstalling GRUB, which then restores access to the
 operating systems you had installed before the issue.
 .br
 Boot-Repair also has advanced options for reinstalling GRUB, adding
-kernel options, restoring a generic MBR, or repair a broken filesystem.
-It can also restore the original bootsector if it has been saved
-previously by Clean-Ubiquity.
-.SH OPTIONS
+kernel options, or restoring a generic MBR.
+.SH OPTIONS FOR TERMINAL MODE
 .TP
-No command line options.
+.B -b / --bootinfo
+returns the boot-info report in terminal mode
+.TP
+.B --esp
+returns basic information about ESP on the system
+.TP
+.B --no-filter
+contents of the boot-info report is not filtered
+.TP
+.B -t=XX
+displays latest XX lines of common logs of linux distributions installed on the system
+.TP
+.B -u / --bootinfo-url
+returns pastebin URL leading to the boot-info report 
+.TP
+.B -v / --version
+displays the version
+.SH ADVANCED OPTIONS
+.TP
+.B -y / --force-yes
+assumes answer yes to all questions, to be used in combination with --bootinfo or --bootinfo-url
+.TP
+.B --g2s-debug
+displays commands sent to the glade2script GUI engine, can be combined with --debug
+.TP
+.B -d / --debug
+debug mode, can be combined with --g2s-debug
+.TP
+.B --python2
+uses glade2script-python2 GUI engine instead of glade2script-python3
 .SH AUTHORS
-Yann MRN <yannubuntu@gmail.com>
+Yann MRN <yannubuntu@protonmail.com>
 .SH SEE ALSO
 .BR https://sourceforge.net/p/boot-repair

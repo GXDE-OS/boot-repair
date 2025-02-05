@@ -1,0 +1,19 @@
+>>> Translators, please translate in Launchpad 
+at https://translations.launchpad.net/boot-repair/trunk
+
+
+>>> Create the .pot (to be done by boot-sav devs only):
+xgettext --add-comments=/ --language=Shell --output=boot-repair/po/boot-sav-translations/boot-sav.pot boot-repair/usr/share/boot-sav*/*.sh
+
+
+#################### Below is old method
+Create the .po (first time, to be done by the dev only):
+cp hello.pot es.po
+
+Update the .po (next times, to be done by the dev only):
+for i in ar cs da de el en_AU es fr he hr is it ja lt nb nl pt pt_BR ru sl sv ta tr; do msgmerge --update boot-repair-common/po/cleancommon-translations/cleancommon-translations-${i}.po boot-repair-common/po/cleancommon-translations/cleancommon-translations.pot ; done
+
+Then translators translate the chains into the various .po files and send the translated .po file to the dev
+
+Dev use the following command to create .mo :
+for i in ar cs da de el en_AU es fr he hr it ja lt nb nl pt pt_BR ru sl sv ta tr; do msgfmt -o boot-repair-common/data/share/locale/${i}/LC_MESSAGES/cleancommon-translations.mo boot-repair-common/po/cleancommon-translations/cleancommon-translations-${i}.po;done

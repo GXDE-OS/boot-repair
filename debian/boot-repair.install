@@ -1,8 +1,8 @@
-etc/apport/crashdb.conf.d/boot-repair-crashdb.conf
-usr/share/apport/package-hooks/source_boot-repair.py
-usr/bin/boot-repair
-usr/share/applications/boot-repair.desktop
-usr/share/boot-sav/bis*
+etc/apport/crashdb.conf.d/boot-repair*
+usr/share/apport/package-hooks/source_boot-repair*
+usr/bin/boot-repair*
+usr/sbin/boot-repair*
+usr/share/applications/boot-repair*
 usr/share/boot-sav/boot-repair*
-usr/share/icons/hicolor/128x128/apps/boot-repair.png
-usr/share/doc/boot-repair/changelog.gz
+usr/share/doc/boot-repair/*
+usr/share/polkit-1/actions/yannubuntu.boot-repair*

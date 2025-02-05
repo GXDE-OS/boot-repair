@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright 2012 Yann MRN
+# Copyright 2017 Yann MRN
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3, as published
@@ -16,34 +16,38 @@
 #Dummy librairies in case boot-sav-extra is not installed
 
 first_translations_extra() {
-echo "[debug]first_translations_extra"
+[[ "$DEBBUG" ]] && echo "[debug]first_translations_extra"
 }
 
 lastgrub_extra() {
-echo "[debug]lastgrub_extra"
+[[ "$DEBBUG" ]] && echo "[debug]lastgrub_extra"
 }
 
 grub_purge_extra() {
-echo "[debug]grub_purge_extra"
+[[ "$DEBBUG" ]] && echo "[debug]grub_purge_extra"
 }
 
 activate_hide_lastgrub_if_necessary() {
-unset_checkbutton_lastgrub;	echo 'SET@_checkbutton_lastgrub.hide()'
-echo "[debug]LASTGRUB_ACTION becomes: $LASTGRUB_ACTION"
+unset_checkbutton_lastgrub;
+[[ "$GUI" ]] && echo 'SET@_checkbutton_lastgrub.hide()'
+[[ "$DEBBUG" ]] && echo "[debug]LASTGRUB_ACTION becomes: $LASTGRUB_ACTION"
 }
 
 repair_boot_ini_nonfree() {
-echo "[debug] repair_boot_ini_nonfree"
+[[ "$DEBBUG" ]] && echo "[debug] repair_boot_ini_nonfree"
 }
 
 installpackagelist_extra() {
-echo "[debug] installpackagelist_extra"
+[[ "$DEBBUG" ]] && echo "[debug] installpackagelist_extra"
 }
 
 repair_dep() {
-echo "[debug] repair_dep"
+[[ "$DEBBUG" ]] && echo "[debug] repair_dep"
 }
 
 restore_dep() {
-echo "[debug] restore_dep"
+[[ "$DEBBUG" ]] && echo "[debug] restore_dep"
+}
+
+update_soft() {
 }

@@ -1,7 +1,8 @@
-etc/apport/crashdb.conf.d/os-uninstaller-crashdb.conf
-usr/share/apport/package-hooks/source_os-uninstaller.py
-usr/bin/os-uninstaller
-usr/share/applications/os-uninstaller.desktop
+etc/apport/crashdb.conf.d/os-uninstaller*
+usr/share/apport/package-hooks/source_os-uninstaller*
+usr/bin/os-uninstaller*
+usr/sbin/os-uninstaller*
+usr/share/applications/os-uninstaller*
 usr/share/boot-sav/os-uninstaller*
-usr/share/icons/hicolor/128x128/apps/os-uninstaller.png
-usr/share/doc/os-uninstaller/changelog.gz
+usr/share/doc/os-uninstaller/*
+usr/share/polkit-1/actions/yannubuntu.os-uninstaller*
