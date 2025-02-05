@@ -15,7 +15,7 @@ Vcs-Browser: https://github.com/yannmrn/boot-repair
 Rules-Requires-Root: no
 
 Package: boot-repair
-Architecture: amd64
+Architecture: all
 Depends:
  boot-sav (>=4ppa2080),
  ${misc:Depends}
@@ -35,7 +35,7 @@ Description: Graphical tool to repair boot problems
  kernel options, or restore a generic MBR.
 
 Package: os-uninstaller
-Architecture: amd64
+Architecture: all
 Depends:
  boot-sav (>=4ppa2080),
  ${misc:Depends}
@@ -53,7 +53,7 @@ Description: Operating System Uninstaller
  bootloader updating.
 
 Package: boot-info
-Architecture: amd64
+Architecture: all
 Depends:
  boot-sav (>=4ppa2080),
  ${misc:Depends}
@@ -66,7 +66,7 @@ Description: Diagnose the boot of the computer
  to a pastebin URL for easier sharing with people who help you.
 
 Package: boot-sav
-Architecture: amd64
+Architecture: all
 Depends:
  efibootmgr,
  gawk | mawk (>= 1.3.4),
@@ -103,7 +103,7 @@ Description: Librairies for Boot-Info, OS-uninstaller and Boot-repair
  and Boot-Repair
 
 Package: boot-sav-extra
-Architecture: amd64
+Architecture: all
 Depends:
  boot-sav,
  ${misc:Depends}
